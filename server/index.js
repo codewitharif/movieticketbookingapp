@@ -27,7 +27,7 @@ app.use(express.json());
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Job Portal API Running 🚀");
+  res.send("movie booking API server Running 🚀");
 });
 
 app.use("/api/inngest",serve({client:inngest, functions}))
