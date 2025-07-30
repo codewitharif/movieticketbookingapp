@@ -1,11 +1,14 @@
-import { Ticket, User, Calendar, Clock } from 'lucide-react';
+import { Ticket, User, Calendar, Clock } from "lucide-react";
+import useMovieStore from "../store/useMovieStore";
+import { useEffect } from "react";
 
 export default function BookingsList() {
-  // Sample data - replace with real data from your store/API
-  const bookings = [
-    { id: "B001", movie: "Dune: Part Two", user: "user@example.com", date: "15 Mar", time: "7:30 PM", seats: ["E5", "E6"], amount: "₹1200" },
-    // Add more bookings...
-  ];
+  const { adminBookings, fetchAdminBookings } = useMovieStore();
+  
+
+  useEffect(()=>{
+    fetchAdminBookings()
+  },[])
 
   return (
     <div>
@@ -15,16 +18,28 @@ export default function BookingsList() {
         <table className="w-full">
           <thead className="bg-slate-800">
             <tr>
-              <th className="px-6 py-4 text-left text-slate-300 font-medium">Booking ID</th>
-              <th className="px-6 py-4 text-left text-slate-300 font-medium">Movie</th>
-              <th className="px-6 py-4 text-left text-slate-300 font-medium">User</th>
-              <th className="px-6 py-4 text-left text-slate-300 font-medium">Show</th>
-              <th className="px-6 py-4 text-left text-slate-300 font-medium">Seats</th>
-              <th className="px-6 py-4 text-left text-slate-300 font-medium">Amount</th>
+              <th className="px-6 py-4 text-left text-slate-300 font-medium">
+                Booking ID
+              </th>
+              <th className="px-6 py-4 text-left text-slate-300 font-medium">
+                Movie
+              </th>
+              <th className="px-6 py-4 text-left text-slate-300 font-medium">
+                User
+              </th>
+              <th className="px-6 py-4 text-left text-slate-300 font-medium">
+                Show
+              </th>
+              <th className="px-6 py-4 text-left text-slate-300 font-medium">
+                Seats
+              </th>
+              <th className="px-6 py-4 text-left text-slate-300 font-medium">
+                Amount
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-600">
-            {bookings.map((booking) => (
+            {adminBookings?.map((booking) => (
               <tr key={booking.id} className="hover:bg-slate-800/50">
                 <td className="px-6 py-4 text-emerald-400">#{booking.id}</td>
                 <td className="px-6 py-4 text-white">{booking.movie}</td>
@@ -42,7 +57,9 @@ export default function BookingsList() {
                     {booking.time}
                   </div>
                 </td>
-                <td className="px-6 py-4 text-slate-300">{booking.seats.join(", ")}</td>
+                <td className="px-6 py-4 text-slate-300">
+                  {booking.seats.join(", ")}
+                </td>
                 <td className="px-6 py-4 text-white">{booking.amount}</td>
               </tr>
             ))}

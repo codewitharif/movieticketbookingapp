@@ -1,8 +1,11 @@
 import { create } from "zustand";
+import axios from "axios";
 
-// Featured Movies and Regular Movies could also be in the store if they're fetched
+// base url of server
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+
+// dummy Featured Movies and Regular Movies to handle frontend temporarily
 export const featuredMovies = [
-  // ... same featuredMovies data as before
   {
     id: 1,
     title: "Guardians of the Galaxy Vol. 3",
@@ -17,102 +20,59 @@ export const featuredMovies = [
   },
   {
     id: 2,
-    title: "Spider-Man: Across the Spider-Verse",
-    genre: "Animation • Action • Adventure",
-    rating: 9.0,
-    duration: "2h 20min",
+    title: "Baahubali: The Beginning",
+    genre: "Action • Drama • Fantasy",
+    rating: 8.0,
+    duration: "2h 39min",
     poster:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=1200&h=600&fit=crop",
+      "https://imgs.search.brave.com/Happ1WcW1T7_FOjvcyGf3giVE-EcaUwyPISjUrQWhYU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDgyMzk4/NzguanBn",
     description:
-      "Miles Morales catapults across the Multiverse in this stunning animated masterpiece.",
-    price: 14,
+      "Shivudu, a daring young man, discovers his royal lineage and begins a journey to rescue a queen and reclaim a lost kingdom.",
+    price: 12,
   },
   {
     id: 3,
-    title: "John Wick: Chapter 4",
-    genre: "Action • Thriller",
-    rating: 8.7,
-    duration: "2h 49min",
+    title: "Stree 2",
+    genre: "Comedy • Horror • Thriller",
+    rating: 7.9,
+    duration: "2h 10min",
     poster:
-      "https://images.unsplash.com/photo-1489599511215-5ce4ce8da93d?w=1200&h=600&fit=crop",
+      "https://imgs.search.brave.com/FFLuRn3Escrs5V6Rva5LAo5GUbqFfA5DriKcx6HGaic/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuaGluZHVzdGFu/dGltZXMuY29tL2lt/Zy8yMDI0LzA4LzE1/LzU1MHgzMDkvc3Ry/ZWVfMl9yZXZpZXdf/c2hyYWRkaGFfa2Fw/b29yX3Jhamt1bW1h/cl9yYW9fMTcyMzY5/MjczNDgxN18xNzIz/NjkyNzM1MDA5Lmpw/Zw",
     description:
-      "John Wick faces his most deadly adversaries in this action-packed finale.",
-    price: 16,
-  },
-];
-export const movies = [
-  {
-    id: 4,
-    title: "Avatar: The Way of Water",
-    genre: "Sci-Fi • Drama",
-    rating: 8.1,
-    duration: "3h 12min",
-    poster:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=600&fit=crop",
-    price: 12,
-    times: ["10:00", "13:30", "17:00", "20:30"],
-  },
-  {
-    id: 5,
-    title: "Top Gun: Maverick",
-    genre: "Action • Drama",
-    rating: 8.7,
-    duration: "2h 11min",
-    poster:
-      "https://images.unsplash.com/photo-1489599511215-5ce4ce8da93d?w=400&h=600&fit=crop",
-    price: 15,
-    times: ["11:15", "14:45", "18:15", "21:45"],
-  },
-  {
-    id: 6,
-    title: "Black Panther: Wakanda Forever",
-    genre: "Action • Adventure",
-    rating: 7.3,
-    duration: "2h 41min",
-    poster:
-      "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=400&h=600&fit=crop",
+      "Chanderi is haunted once again as Stree returns. The gang reunites to uncover the mystery behind her reappearance.",
     price: 13,
-    times: ["12:00", "15:30", "19:00", "22:30"],
-  },
-  {
-    id: 7,
-    title: "The Batman",
-    genre: "Action • Crime • Drama",
-    rating: 8.2,
-    duration: "2h 56min",
-    poster:
-      "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=400&h=600&fit=crop",
-    price: 14,
-    times: ["13:00", "16:30", "20:00", "23:30"],
-  },
-  {
-    id: 8,
-    title: "Doctor Strange 2",
-    genre: "Action • Fantasy",
-    rating: 7.8,
-    duration: "2h 6min",
-    poster:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=400&h=600&fit=crop",
-    price: 13,
-    times: ["11:00", "14:00", "17:30", "21:00"],
-  },
-  {
-    id: 9,
-    title: "Minions: The Rise of Gru",
-    genre: "Animation • Comedy",
-    rating: 7.5,
-    duration: "1h 27min",
-    poster:
-      "https://images.unsplash.com/photo-1489599511215-5ce4ce8da93d?w=400&h=600&fit=crop",
-    price: 11,
-    times: ["10:30", "13:00", "15:30", "18:00"],
   },
 ];
 
+const useMovieStore = create((set, get) => ({
+  // Main States - Real API data
+  isAdmin: false,
+  movies: [], // Real movies from API
+  shows: [], // Real shows from API
+  favoriteMovies: [],
+  adminBookings: [], // Real bookings for admin to see
+  userBookings: [], // User bookings
+  occupiedSeats: {}, // Real occupied seats data
+  loading: false,
+  error: null,
 
+  // Auth related - Fixed hooks usage
+  user: null,
+  token: null,
 
-const useMovieStore = create((set) => ({
-  // State
+  // Dashboard specific data
+  dashboardData: {
+    totalBookings: 0,
+    totalRevenue: 0,
+    activeShows: 0,
+    totalUser: 0,
+  },
+
+  selectedShow: null,
+  movieShows: [],
+  moviesWithShows: [],
+
+  // Dummy states for handling frontend
   selectedMovie: null,
   showBooking: false,
   selectedSeats: [],
@@ -120,24 +80,407 @@ const useMovieStore = create((set) => ({
   selectedDate: "Today",
   currentSlide: 0,
 
-    // NEW: Add bookings array (initialized with your sample booking)
-  bookings: [
-    {
-      id: "b1234567",
-      movie: {
-        title: "Dune: Part Two",
-        poster: "https://example.com/dune-poster.jpg",
-        genre: "Sci-Fi/Adventure",
-      },
-      date: "Mar 15, 2024",
-      time: "7:30 PM",
-      theater: "CinemaVibe PVR, Mumbai",
-      seats: ["E5", "E6"],
-      total: 1200,
-    }
-  ],
+  // Initialize auth data (call this in component useEffect)
+  initializeAuth: (user, getToken) => {
+    console.log("my token is ", getToken);
+    set({ user, getToken: getToken });
+  },
 
-  // Actions
+  // Real Actions for API calls
+  setIsAdmin: (admin) => set({ isAdmin: admin }),
+  setLoading: (loading) => set({ loading }),
+  setError: (error) => set({ error }),
+
+  // Fetch movies from API
+  fetchMovies: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await axios.get("/api/movies");
+
+      if (data.success) {
+        set({ movies: data.movies, loading: false });
+      } else {
+        set({ error: data.message, loading: false });
+      }
+    } catch (error) {
+      console.log("Error fetching movies:", error);
+      set({ error: "Failed to fetch movies", loading: false });
+    }
+  },
+
+  fetchShows: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await axios.get(`/api/shows/`);
+
+      if (data.success) {
+        set({ shows: data.shows, loading: false });
+      } else {
+        set({ error: data.message, loading: false });
+      }
+    } catch (error) {
+      console.log("Error fetching shows:", error);
+      set({ error: "Failed to fetch shows", loading: false });
+    }
+  },
+
+  // Add this function to your store actions
+  fetchMovieShows: async (movieId) => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await axios.get(`/api/shows/movie/${movieId}`);
+
+      if (data.success) {
+        set({ movieShows: data.shows, loading: false });
+        return { success: true, shows: data.shows };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error fetching movie shows:", error);
+      set({ error: "Failed to fetch movie shows", loading: false });
+      return { success: false, message: "Failed to fetch movie shows" };
+    }
+  },
+
+  fetchMoviesWithShows: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await axios.get(`/api/movies/movies-with-shows`);
+
+      if (data.success) {
+        set({ moviesWithShows: data.movies, loading: false });
+        return { success: true, shows: data.movies };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error fetching movie with shows:", error);
+      set({ error: "Failed to fetch movie with shows", loading: false });
+      return { success: false, message: "Failed to fetch movie with shows" };
+    }
+  },
+
+  // Helper function to group shows by date
+  groupShowsByDate: () => {
+    const { movieShows } = get();
+    const grouped = {};
+    movieShows.forEach((show) => {
+      const dateKey = new Date(show.showDate).toDateString();
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = [];
+      }
+      grouped[dateKey].push(show);
+    });
+    return grouped;
+  },
+
+  // Fetch dashboard data
+  fetchDashboardData: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { getToken } = get();
+
+      if (!getToken) {
+        throw new Error("Authentication required");
+      }
+
+      const token = await getToken();
+      const { data } = await axios.get("/api/admin/dashboard", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        set({
+          dashboardData: data.dashboardData,
+          loading: false,
+        });
+        return { success: true, data: data.data };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error fetching dashboard data:", error);
+      set({ error: "Failed to fetch dashboard data", loading: false });
+      return { success: false, message: "Failed to fetch dashboard data" };
+    }
+  },
+
+  fetchFavoriteMovies: async (getToken) => {
+    try {
+      set({ loading: true, error: null });
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+
+      const { data } = await axios.get(`/api/user/favourites`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        set({ favoriteMovies: data.movies, loading: false });
+        console.log("success");
+      } else {
+        set({ error: data.message, loading: false });
+      }
+    } catch (error) {
+      console.log("Error fetching favorite movies:", error);
+      set({ error: "Failed to fetch favorite movies", loading: false });
+    }
+  },
+
+  addFavorite: (id) =>
+    set((state) => ({ favoriteMovies: [...state.favoriteMovies, id] })),
+  removeFavorite: (id) =>
+    set((state) => ({
+      favoriteMovies: state.favoriteMovies.filter((movieId) => movieId !== id),
+    })),
+  // isFavorite: (id) => get().favoriteMovies.includes(id),
+  isFavorite: (id) => get().favoriteMovies.some((m) => m._id === id),
+
+  // Toggle favourite for a movie
+  toggleFavorite: async (movieId, token) => {
+    try {
+      set({ loading: true, error: null });
+      // const token = await getToken();
+
+      const res = await axios.post(
+        "/api/user/update-favourites",
+        { movieId },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.data.success) {
+        console.log("you toggled succesfully");
+        get().fetchFavoriteMovies(token);
+      }
+    } catch (error) {
+      console.log("Error toggling favorite:", error);
+    }
+  },
+
+  // Fetch shows for a specific movie
+  fetchShowsByMovie: async (movieId) => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await axios.get(`/api/shows/movie/${movieId}`);
+      if (data.success) {
+        set({ shows: data.shows, loading: false });
+      } else {
+        set({ error: data.message, loading: false });
+      }
+    } catch (error) {
+      console.log("Error fetching shows:", error);
+      set({ error: "Failed to fetch shows", loading: false });
+    }
+  },
+
+  // Fetch occupied seats for a show
+  fetchOccupiedSeats: async (showId) => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await axios.get(`/api/bookings/seats/${showId}`);
+
+      if (data.success) {
+        set({ occupiedSeats: data.occupiedSeats, loading: false });
+        return { success: true, occupiedSeats: data.occupiedSeats };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error fetching occupied seats:", error);
+      set({ error: "Failed to fetch occupied seats", loading: false });
+      return { success: false, message: "Failed to fetch occupied seats" };
+    }
+  },
+
+  // Create booking - Updated to match SeatSelection component
+  createBooking: async (bookingData) => {
+    try {
+      set({ loading: true, error: null });
+      const { getToken } = get();
+
+      if (!getToken) {
+        throw new Error("Authentication required");
+      }
+
+      const token = await getToken();
+      const { data } = await axios.post("/api/bookings/create", bookingData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (data.success) {
+        set({ loading: false });
+        // Clear selected seats after successful booking
+        set({ selectedSeats: [] });
+        return { success: true, booking: data.booking, bookingId: data.bookingId };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error creating booking:", error);
+      set({ error: "Failed to create booking", loading: false });
+      return { success: false, message: error.response?.data?.message || "Failed to create booking" };
+    }
+  },
+
+  fetchAdminBookings: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { getToken, user } = get();
+
+      if (!getToken || !user) {
+        throw new Error("Authentication required");
+      }
+
+      const token = await getToken();
+      const { data } = await axios.get(`/api/admin/bookings`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        set({ adminBookings: data.bookings, loading: false });
+      } else {
+        set({ error: data.message, loading: false });
+      }
+    } catch (error) {
+      console.log("Error fetching admin bookings:", error);
+      set({ error: "Failed to fetch bookings", loading: false });
+    }
+  },
+
+  // Fetch user bookings
+  fetchUserBookings: async () => {
+    try {
+      set({ loading: true, error: null });
+      const { getToken, user } = get();
+
+      if (!getToken || !user) {
+        throw new Error("Authentication required");
+      }
+
+      const token = await getToken();
+      const { data } = await axios.get(`/api/bookings/user/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        set({ userBookings: data.bookings, loading: false });
+        return { success: true, bookings: data.bookings };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error fetching user bookings:", error);
+      set({ error: "Failed to fetch bookings", loading: false });
+      return { success: false, message: "Failed to fetch bookings" };
+    }
+  },
+
+  // Fetch booking by ID - for confirmation page
+  fetchBookingById: async (bookingId) => {
+    try {
+      set({ loading: true, error: null });
+      const { getToken } = get();
+
+      if (!getToken) {
+        throw new Error("Authentication required");
+      }
+
+      const token = await getToken();
+      const { data } = await axios.get(`/api/bookings/${bookingId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        set({ loading: false });
+        return { success: true, booking: data.booking };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error fetching booking:", error);
+      set({ error: "Failed to fetch booking", loading: false });
+      return { success: false, message: "Failed to fetch booking" };
+    }
+  },
+
+  // Cancel booking
+  cancelBooking: async (bookingId) => {
+    try {
+      set({ loading: true, error: null });
+      const { getToken } = get();
+
+      if (!getToken) {
+        throw new Error("Authentication required");
+      }
+
+      const token = await getToken();
+      const { data } = await axios.put(`/api/bookings/${bookingId}/cancel`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data.success) {
+        set({ loading: false });
+        // Refresh user bookings
+        get().fetchUserBookings();
+        return { success: true, message: data.message };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error cancelling booking:", error);
+      set({ error: "Failed to cancel booking", loading: false });
+      return { success: false, message: "Failed to cancel booking" };
+    }
+  },
+
+  // Check if user is admin
+  fetchIsAdmin: async () => {
+    console.log("Starting admin check...");
+    try {
+      const { getToken } = get();
+
+      if (!getToken) {
+        console.log("No token available");
+        return false; // Explicit return
+      }
+
+      const token = await getToken();
+      console.log("Token acquired, making API call...");
+
+      const { data } = await axios.get("/api/admin/is-admin", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("API Response:", data);
+      set({ isAdmin: data.isAdmin, loading: false });
+      return data.isAdmin; // Return value for immediate use
+    } catch (error) {
+      console.error("Admin check failed:", error);
+      set({ isAdmin: false, loading: false });
+      return false;
+    }
+  },
+  
+  setSelectedShow: (show) => set({ selectedShow: show }),
+
+  // Dummy Actions for current frontend
   setSelectedMovie: (movie) => set({ selectedMovie: movie }),
   setShowBooking: (show) => set({ showBooking: show }),
   setSelectedSeats: (seats) => set({ selectedSeats: seats }),
@@ -145,27 +488,101 @@ const useMovieStore = create((set) => ({
   setSelectedDate: (date) => set({ selectedDate: date }),
   setCurrentSlide: (slide) => set({ currentSlide: slide }),
 
-  // Derived actions
-  handleBookNow: (movie) => {
-    console.log("movie is clicked handlebook now called", movie);
+  // Enhanced handleBookNow with real API integration
+  handleBookNow: async (movie) => {
+    console.log("Movie is clicked, handleBookNow called", movie);
+
     set({
       selectedMovie: movie,
       showBooking: true,
-      selectedSeats: [], // Reset seats when booking new movie
-      selectedTime: "", // Reset time selection
-      selectedDate: "Today", // Reset date selection
+      selectedSeats: [],
+      selectedTime: "",
+      selectedDate: "Today",
     });
+
+    // Fetch shows for this movie
+    // await get().fetchShowsByMovie(movie._id || movie.id);
+  },
+  handleSelectedMovie: async (movie) => {
+    console.log("Movie is clicked, handleSelectedMovie called", movie);
+
+    set({
+      selectedMovie: movie,
+      showBooking: true,
+      selectedSeats: [],
+      selectedTime: "",
+      selectedDate: "Today",
+    });
+
+    // Fetch shows for this movie
+    // await get().fetchShowsByMovie(movie._id || movie.id);
+  },
+
+  handleShowSelection: async (show) => {
+    console.log("Show is clicked, handleShowSelection called", show);
+
+    set({
+      selectedShow: show,
+      // selectedMovie:show,
+      showBooking: true,
+      selectedSeats: [],
+      selectedTime: "",
+      selectedDate: "Today",
+    });
+    // Fetch shows for this movie
+    // await get().fetchShowsByMovie(movie._id);
+  },
+
+  // Helper function to get unique movies from shows
+  getUniqueMoviesFromShows: () => {
+    const { shows } = get();
+    if (!shows || shows.length === 0) return [];
+
+    const movieMap = new Map();
+
+    shows.forEach((show) => {
+      const movie = show.movie;
+      if (movie && !movieMap.has(movie._id)) {
+        movieMap.set(movie._id, {
+          ...movie,
+          shows: shows.filter((s) => s.movie._id === movie._id),
+        });
+      }
+    });
+
+    return Array.from(movieMap.values());
   },
 
   handleBackToMovies: () => {
-    set({ showBooking: false, selectedMovie: null, selectedSeats: [] });
+    set({
+      showBooking: false,
+      selectedMovie: null,
+      selectedSeats: [],
+      shows: [],
+      occupiedSeats: {},
+    });
+  },
+  handleBackToShows: () => {
+    set({
+      showBooking: false,
+      selectedShow: null,
+      //  selectedMovie: null,
+      selectedSeats: [],
+      shows: [],
+      occupiedSeats: {},
+    });
   },
 
-  // Seat selection logic
+  // Enhanced seat selection with real occupied seats
   handleSeatClick: (seat) => {
     set((state) => {
-      if (["A5", "A6", "B3", "C7", "C8", "D5", "E2", "F9", "G4"].includes(seat))
-        return {};
+      // Check if seat is occupied from real API data
+      const { occupiedSeats, selectedTime } = state;
+      const isOccupied = occupiedSeats[selectedTime]?.[seat];
+
+      if (isOccupied) {
+        return {}; // Don't allow selection of occupied seats
+      }
 
       return {
         selectedSeats: state.selectedSeats.includes(seat)
@@ -175,7 +592,7 @@ const useMovieStore = create((set) => ({
     });
   },
 
-  // Generate seats (could be memoized)
+  // Generate seats
   generateSeats: () => {
     const seats = [];
     const rows = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -187,12 +604,19 @@ const useMovieStore = create((set) => ({
     return seats;
   },
 
-  // Get seat status
+  // Enhanced seat status with real data
   getSeatStatus: (seat) => {
-    const { selectedSeats } = useMovieStore.getState();
-    if (["A5", "A6", "B3", "C7", "C8", "D5", "E2", "F9", "G4"].includes(seat))
+    const { selectedSeats, occupiedSeats, selectedTime } = get();
+
+    // Check real occupied seats from API
+    if (occupiedSeats[selectedTime]?.[seat]) {
       return "booked";
-    if (selectedSeats.includes(seat)) return "selected";
+    }
+
+    if (selectedSeats.includes(seat)) {
+      return "selected";
+    }
+
     return "available";
   },
 

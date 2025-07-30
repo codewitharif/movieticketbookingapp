@@ -1,23 +1,78 @@
-import { Film, Ticket, Users, TrendingUp } from "lucide-react";
+import { Film, Ticket, Users, TrendingUp, Loader } from "lucide-react";
+import { useEffect } from "react";
+import useMovieStore from "../store/useMovieStore";
 
 export default function AdminHome() {
+  const {
+    movies,
+    fetchMovies,
+    dashboardData,
+    fetchDashboardData,
+    loading,
+    error,
+  } = useMovieStore();
+  
+  const totalActiveShows = 
+    Array.isArray(dashboardData?.activeShows) 
+      ? dashboardData.activeShows.reduce((total, show) => {
+          return total + (show.timings?.length || 0);
+        }, 0) 
+      : 0;
+
+  useEffect(() => {
+    // Fetch dashboard data when component mounts
+    fetchDashboardData();
+    fetchMovies();
+  }, [fetchDashboardData, fetchMovies]);
+
+  console.log("my dashboard data is ", dashboardData);
+
   const stats = [
-    { title: "Total Movies", value: "24", icon: Film, change: "+3 this month" },
+    {
+      title: "Active Shows",
+      value: dashboardData?.activeShows || 0,
+      icon: Film,
+      change: "+3 this month",
+    },
     {
       title: "Total Bookings",
-      value: "1,284",
+      value: dashboardData?.totalBookings || 0,
       icon: Ticket,
       change: "12% increase",
     },
-    { title: "Active Users", value: "892", icon: Users, change: "5% increase" },
+    {
+      title: "Active Users",
+      value: dashboardData?.totalUser || 0,
+      icon: Users,
+      change: "5% increase",
+    },
     {
       title: "Revenue",
-      value: "₹2,84,500",
+      value: `₹${dashboardData?.totalRevenue?.toLocaleString("en-IN") || 0}`,
       icon: TrendingUp,
       change: "18% increase",
     },
   ];
 
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-red-400 text-lg">Error: {error}</div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          {/* <p className="text-white text-lg font-medium">Loading...</p> */}
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div>
       <h2 className="text-3xl font-bold text-white mb-8">Dashboard Overview</h2>
@@ -48,7 +103,24 @@ export default function AdminHome() {
         <h3 className="text-xl font-semibold text-white mb-4">
           Recent Activity
         </h3>
-        {/* Activity feed would go here */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between py-2 border-b border-slate-600">
+            <span className="text-slate-300">Active Shows</span>
+            <span className="text-emerald-400 font-semibold">
+              {totalActiveShows || 0}
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-2 border-b border-slate-600">
+            <span className="text-slate-300">Total Movies Available</span>
+            <span className="text-emerald-400 font-semibold">
+              {movies?.length || 0}
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <span className="text-slate-300">System Status</span>
+            <span className="text-green-400 font-semibold">Online</span>
+          </div>
+        </div>
       </div>
     </div>
   );

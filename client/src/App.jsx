@@ -5,49 +5,125 @@ import MovieListing from "./components/MovieListing";
 import WhyChooseUs from "./components/WhyChooseUs";
 import Footer from "./components/Footer";
 import BookingPage from "./pages/BookingPage";
-import { featuredMovies, movies } from "./store/useMovieStore";
+import { featuredMovies } from "./store/useMovieStore";
 import Home from "./pages/Home";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Test from "./components/Test";
 import MyBookings from "./pages/MyBookings";
 import AddMovie from "./components/AddMovie";
-import MoviesList from "./components/MoviesList";
 import BookingsList from "./components/BookingList";
 import AdminHome from "./components/AdminHome";
 import AdminDashboard from "./pages/AdminDashboard";
+import { useUser, SignIn } from "@clerk/clerk-react";
+
+// Store
+import useMovieStore from "./store/useMovieStore";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import RequireAdmin from "./pages/RequireAdmin";
+import AddShow from "./components/AddShow";
+import ListShow from "./components/ListShow";
+import NotFound404 from "./pages/NotFound";
+import Favourites from "./components/Favourites";
+import UserBookings from "./components/UserBookings";
+import Loading from "./components/Loading";
 
 export default function App() {
   return (
     <div className="min-h-screen bg-slate-900">
+      <ToastContainer />
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={
-          <>
-            <Navbar />
-            <Home />
-            <Footer />
-          </>
-        } />
-        <Route path="/booking/:id" element={
-          <>
-            <Navbar />
-            <BookingPage />
-            <Footer />
-          </>
-        } />
-        <Route path="/mybooking" element={
-          <>
-            <Navbar />
-            <MyBookings />
-            <Footer />
-          </>
-        } />
+
+        <Route
+          path="/"
+          element={
+            <>
+              <Navbar />
+              <Home />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/booking/:id"
+          element={
+            <>
+              <Navbar />
+              <BookingPage />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/mybooking"
+          element={
+            <>
+              <Navbar />
+              <MyBookings />
+              <Footer />
+            </>
+          }
+        />
+
+        <Route
+          path="/admin/sign-in"
+          element={
+            <div className="flex justify-center items-center min-h-screen">
+              <SignIn
+                routing="path"
+                path="/admin/sign-in"
+                redirectUrl="/admin"
+              />
+            </div>
+          }
+        />
+
+        <Route path="*" element={<NotFound404 />} />
+        <Route
+          path="/favourites"
+          element={
+            <>
+              <Navbar />
+              <Favourites />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/mybookings"
+          element={
+            <>
+              <Navbar />
+              <UserBookings />
+              <Footer />
+            </>
+          }
+        />
+        <Route
+          path="/loading"
+          element={
+            <>
+              <Navbar />
+              <Loading />
+              <Footer />
+            </>
+          }
+        />
 
         {/* Admin Routes */}
-        <Route path="/admin" element={<AdminDashboard />}>
+        <Route
+          path="/admin"
+          element={
+            <RequireAdmin>
+              <AdminDashboard />
+            </RequireAdmin>
+          }
+        >
           <Route index element={<AdminHome />} />
           <Route path="add-movie" element={<AddMovie />} />
-          <Route path="movies" element={<MoviesList />} />
+          <Route path="add-show" element={<AddShow />} />
+          <Route path="all-shows" element={<ListShow />} />
           <Route path="bookings" element={<BookingsList />} />
         </Route>
       </Routes>
