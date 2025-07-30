@@ -186,12 +186,23 @@ const createBooking = async (req, res) => {
       await newBooking.save();
 
       // run inngest sceduler function to check payment status after 10 minutes
-      await inngest.send({
-        name: "app/checkpayment",
-        data: {
-          bookingId: newBooking._id.toString(),
-        },
-      });
+      // await inngest.send({
+      //   name: "app/checkpayment",
+      //   data: {
+      //     bookingId: newBooking._id.toString(),
+      //   },
+      // });
+      try {
+        await inngest.send({
+          name: "app/checkpayment",
+          data: {
+            bookingId: newBooking._id.toString(),
+          },
+        });
+      } catch (inngestError) {
+        console.error("Inngest error:", inngestError);
+        // Don't throw here, just log - booking is already successful
+      }
 
       res.status(201).json({
         success: true,
@@ -203,8 +214,6 @@ const createBooking = async (req, res) => {
     } catch (error) {
       // Rollback transaction
       await dbSession.abortTransaction();
-      dbSession.endSession();
-      throw error;
     }
   } catch (error) {
     res.status(500).json({
