@@ -3,7 +3,7 @@ const User = require("../models/user");
 const Booking = require("../models/booking");
 const Show = require("../models/show");
 const { model } = require("mongoose");
-const { sendMail } = require("../config/nodeMailer");
+const { sendEmail } = require("../config/nodeMailer");
 
 // Create Inngest instance
 const inngest = new Inngest({ id: "movie-ticket-booking" });
@@ -167,7 +167,7 @@ const sendBookingConfirmationEmail = inngest.createFunction(
       })
       .populate("user");
 
-    await sendMail({
+    await sendEmail({
       to: booking.user.email,
       subject: `Payment Confirmation : "${booking.show.movie.Title}" booked!`,
       body: `   <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
