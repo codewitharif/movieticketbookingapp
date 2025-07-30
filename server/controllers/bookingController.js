@@ -1,4 +1,5 @@
 // controllers/bookingController.js
+const { inngest } = require("../inngest");
 const Booking = require("../models/booking");
 const Show = require("../models/show");
 const mongoose = require("mongoose");
@@ -183,6 +184,14 @@ const createBooking = async (req, res) => {
 
       newBooking.paymentLink = stripeSession.url;
       await newBooking.save();
+
+      // run inngest sceduler function to check payment status after 10 minutes
+      await inngest.send({
+        name: "app/checkpayment",
+        data: {
+          bookingId: newBooking._id.toString(),
+        },
+      });
 
       res.status(201).json({
         success: true,

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -321,9 +322,12 @@ const UserBookings = () => {
                     {/* Action Buttons */}
                     <div className="pt-4 space-y-2">
                       {!selectedBooking.isPaid && (
-                        <button className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white py-2 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300">
+                        <Link
+                          to={selectedBooking.paymentLink}
+                          className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white py-2 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300"
+                        >
                           Complete Payment
-                        </button>
+                        </Link>
                       )}
                       <button
                         onClick={() => handleCancelBooking(selectedBooking._id)}
