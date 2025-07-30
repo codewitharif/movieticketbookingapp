@@ -2,6 +2,8 @@ const { Inngest } = require("inngest");
 const User = require("../models/user");
 const Booking = require("../models/booking");
 const Show = require("../models/show");
+const { model } = require("mongoose");
+const { sendEmail } = require("../config/nodeMailer");
 
 // Create Inngest instance
 const inngest = new Inngest({ id: "movie-ticket-booking" });
@@ -67,7 +69,6 @@ const syncUserDeletion = inngest.createFunction(
 );
 
 // inngest function to cancel booking and release seats of show after 100 minutes of booking created  if payment s not made
-
 const releaseSeatsAndDeleteBooking = inngest.createFunction(
   { id: "release-seats-delete-booking" },
   { event: "app/checkpayment" },
@@ -104,11 +105,82 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
   }
 );
 
+const sendBookingConfirmationEmail = inngest.createFunction(
+  { id: "send-booking-confirmation-email" },
+  { event: "app/show.booked" },
+  async ({ event, step }) => {
+    const { bookingId } = event.data;
+
+    const booking = await Booking.findById(bookingId)
+      .populate({
+        path: "show",
+        populate: { path: "movie", model: "Movie" },
+      })
+      .populate("user");
+
+    await sendEmail({
+      to: booking.user.email,
+      subject: `Payment Confirmation : "${booking.show.movie.Title}" booked!`,
+      body: `   <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+      <div style="max-width: 600px; margin: auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <div style="background-color: #111827; color: white; padding: 20px;">
+          <h2 style="margin: 0;">🎟️ Booking Confirmed!</h2>
+        </div>
+        <div style="padding: 20px;">
+          <p>Hi <strong>${booking.user.name || "Guest"}</strong>,</p>
+          <p>Thank you for booking your ticket with us. Here are your booking details:</p>
+          <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>🎬 Movie</strong></td>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${
+                booking.show.movie.Title
+              }</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>📅 Date</strong></td>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${new Date(
+                booking.show.showDate
+              ).toLocaleDateString("en-IN", {
+                timeZone: "Asia/Kolkata",
+              })}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>⏰ Time</strong></td>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${
+                booking.show.showTime
+              }</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>💺 Seats</strong></td>
+              <td style="padding: 8px; border-bottom: 1px solid #ddd;">${booking.bookedSeats.join(
+                ", "
+              )}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px;"><strong>💰 Price</strong></td>
+              <td style="padding: 8px;">₹${booking.amount}</td>
+            </tr>
+          </table>
+
+          <p style="margin-top: 20px;">We hope you enjoy the show! 🎉</p>
+
+          <p style="color: #555; font-size: 14px;">If you have any questions, feel free to reply to this email.</p>
+        </div>
+        <div style="background-color: #f9fafb; text-align: center; padding: 15px; color: #888; font-size: 12px;">
+          &copy; ${new Date().getFullYear()} IndieShows. All rights reserved.
+        </div>
+      </div>
+    </div>`,
+    });
+  }
+);
+
 // Export functions
 const functions = [
   syncUserCreation,
   syncUserUpdate,
   syncUserDeletion,
   releaseSeatsAndDeleteBooking,
+  sendBookingConfirmationEmail,
 ];
 module.exports = { inngest, functions };

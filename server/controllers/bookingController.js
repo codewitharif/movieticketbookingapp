@@ -1,5 +1,5 @@
 // controllers/bookingController.js
-const { inngest } = require("../inngest");
+const { inngest } = require("../inngest/index");
 const Booking = require("../models/booking");
 const Show = require("../models/show");
 const mongoose = require("mongoose");

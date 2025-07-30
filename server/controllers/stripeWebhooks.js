@@ -1,5 +1,6 @@
 const Stripe = require("stripe");
 const Booking = require("../models/booking");
+const { inngest } = require("../inngest/index");
 
 exports.stripeWebhhoks = async (req, res) => {
   const stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -33,7 +34,13 @@ exports.stripeWebhhoks = async (req, res) => {
           isPaid: true,
           paymentLink: "",
         });
-        console.log("Booking marked as paid:", bookingId);
+
+        // send confirmation email
+        await inngest.send({
+            name:"app/show.booked",
+            data:{bookingId}
+        })
+        // console.log("Booking marked as paid:", bookingId);
 
         break;
       }
