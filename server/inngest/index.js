@@ -6,7 +6,10 @@ const { model } = require("mongoose");
 const { sendEmail } = require("../config/nodeMailer");
 
 // Create Inngest instance
-const inngest = new Inngest({ id: "movie-ticket-booking" });
+const inngest = new Inngest({
+  id: "movie-ticket-booking",
+  eventKey: process.env.INNGEST_EVENT_KEY,
+});
 
 /**
  * Sync user creation from Clerk to MongoDB
