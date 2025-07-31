@@ -137,11 +137,12 @@ const createBooking = async (req, res) => {
 
       await newBooking.save({ dbSession });
 
-      // Update occupied seats in show using Show model method
+      // Update show occupied seats INSIDE transaction
+      const show = await Show.findById(showId).session(dbSession);
       for (let seat of selectedSeats) {
-        await show.bookSeat(seat);
+        show.occupiedSeats[seat] = true;
       }
-
+      await show.save({ session: dbSession });
       // Commit transaction
       await dbSession.commitTransaction();
       dbSession.endSession();
@@ -185,13 +186,6 @@ const createBooking = async (req, res) => {
       newBooking.paymentLink = stripeSession.url;
       await newBooking.save();
 
-      // run inngest sceduler function to check payment status after 10 minutes
-      // await inngest.send({
-      //   name: "app/checkpayment",
-      //   data: {
-      //     bookingId: newBooking._id.toString(),
-      //   },
-      // });
       try {
         await inngest.send({
           name: "app/checkpayment",
