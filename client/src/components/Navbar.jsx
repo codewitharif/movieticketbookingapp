@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Menu, X, Ticket } from "lucide-react";
+import { Play, Menu, X, Ticket, Heart } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   SignedIn,
@@ -102,6 +102,13 @@ export default function Navbar({ setShowBooking }) {
                       label="My Bookings"
                       labelIcon={<Ticket width={15} />}
                       onClick={() => navigate("/mybookings")}
+                    />
+                  </UserButton.MenuItems>
+                  <UserButton.MenuItems>
+                    <UserButton.Action
+                      label="My Favourites"
+                      labelIcon={<Heart width={15} />}
+                      onClick={() => navigate("/favourites")}
                     />
                   </UserButton.MenuItems>
                 </UserButton>

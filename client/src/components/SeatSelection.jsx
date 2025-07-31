@@ -117,7 +117,7 @@ export default function SeatSelection({
 
         // Navigate to booking confirmation or payment page
         // navigate("/mybookings");
-        window.location.href = response.data.url
+        window.location.href = response.data.url;
         // navigate(`/booking-confirmation/${response.data.bookingId}`);
       } else {
         toast.error(response.data.message || "Booking failed");
@@ -153,32 +153,83 @@ export default function SeatSelection({
       </div>
 
       {/* Seats Grid */}
-      <div className="mb-8 max-w-4xl mx-auto">
-        {["A", "B", "C", "D", "E", "F", "G", "H"].map((row) => (
-          <div key={row} className="flex items-center justify-center mb-3">
-            <div className="w-6 text-slate-400 text-sm font-medium">{row}</div>
-            <div className="flex gap-2 mx-4">
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((seatNum) => {
-                const seat = `${row}${seatNum}`;
-                const status = getSeatStatus(seat);
-                return (
-                  <button
-                    key={seat}
-                    onClick={() => handleSeatClick(seat)}
-                    disabled={status === "booked" || bookingLoading}
-                    className={`w-8 h-8 rounded-md text-xs font-semibold transition-all duration-200 transform hover:scale-110 disabled:cursor-not-allowed ${getSeatColor(
-                      status
-                    )}`}
-                  >
-                    {seatNum}
-                  </button>
-                );
-              })}
+      {/* Seats Grid - Mobile Responsive with Vertical Layout */}
+      <div className="mb-8 w-full">
+        {/* Mobile Layout - Compact Vertical */}
+        <div className="block sm:hidden px-4">
+          {["A", "B", "C", "D", "E", "F", "G", "H"].map((row) => (
+            <div key={row} className="mb-3">
+              <div className="flex items-center">
+                <div className="w-6 text-slate-400 text-sm font-medium">
+                  {row}
+                </div>
+                <div className="flex gap-1 flex-wrap mx-2 flex-1 justify-center">
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map(
+                    (seatNum) => {
+                      const seat = `${row}${seatNum}`;
+                      const status = getSeatStatus(seat);
+                      return (
+                        <button
+                          key={seat}
+                          onClick={() => handleSeatClick(seat)}
+                          disabled={status === "booked" || bookingLoading}
+                          className={`
+                    w-7 h-7 
+                    rounded-md 
+                    text-xs 
+                    font-semibold 
+                    transition-all duration-200 
+                    disabled:cursor-not-allowed
+                    ${getSeatColor(status)}
+                  `}
+                        >
+                          {seatNum}
+                        </button>
+                      );
+                    }
+                  )}
+                </div>
+                <div className="w-6 text-slate-400 text-sm font-medium">
+                  {row}
+                </div>
+              </div>
             </div>
-            <div className="w-6 text-slate-400 text-sm font-medium">{row}</div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Desktop Layout - Original */}
+        <div className="hidden sm:block max-w-4xl mx-auto">
+          {["A", "B", "C", "D", "E", "F", "G", "H"].map((row) => (
+            <div key={row} className="flex items-center justify-center mb-3">
+              <div className="w-6 text-slate-400 text-sm font-medium">
+                {row}
+              </div>
+              <div className="flex gap-2 mx-4">
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((seatNum) => {
+                  const seat = `${row}${seatNum}`;
+                  const status = getSeatStatus(seat);
+                  return (
+                    <button
+                      key={seat}
+                      onClick={() => handleSeatClick(seat)}
+                      disabled={status === "booked" || bookingLoading}
+                      className={`w-8 h-8 rounded-md text-xs font-semibold transition-all duration-200 transform hover:scale-110 disabled:cursor-not-allowed ${getSeatColor(
+                        status
+                      )}`}
+                    >
+                      {seatNum}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="w-6 text-slate-400 text-sm font-medium">
+                {row}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+      {/* seat view end  */}
 
       {/* Legend */}
       <div className="flex justify-center space-x-8 mb-8">
