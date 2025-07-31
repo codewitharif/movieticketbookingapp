@@ -36,12 +36,13 @@ exports.stripeWebhhoks = async (req, res) => {
         });
 
         // send confirmation email
-        await inngest.send({
-            name:"app/show.booked",
-            data:{bookingId}
-        })
-        // console.log("Booking marked as paid:", bookingId);
 
+        console.log("📤 Sending email event for booking:", bookingId);
+        await inngest.send({
+          name: "app/show.booked",
+          data: { bookingId },
+        });
+        console.log("✅ Email event sent to Inngest");
         break;
       }
 
