@@ -171,6 +171,27 @@ const sendBookingConfirmationEmail = inngest.createFunction(
       .populate("user");
     console.log(booking.user.email);
 
+    // Debug logs add karo
+    console.log("📧 Booking found:", !!booking);
+    console.log("👤 User found:", !!booking?.user);
+    console.log("✉️ User email:", booking?.user?.email);
+    console.log("🎬 Movie title:", booking?.show?.movie?.Title);
+
+    if (!booking) {
+      console.log("❌ Booking not found");
+      return;
+    }
+
+    if (!booking.user) {
+      console.log("❌ User not populated");
+      return;
+    }
+
+    if (!booking.user.email) {
+      console.log("❌ User email is missing");
+      return;
+    }
+
     await sendEmail({
       to: booking.user.email,
       subject: `Payment Confirmation : "${booking.show.movie.Title}" booked!`,
