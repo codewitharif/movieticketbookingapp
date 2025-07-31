@@ -4,6 +4,7 @@ const BookingSchema = new mongoose.Schema(
   {
     user: {
       type: String,
+      ref: "User",
       required: true,
     },
     show: {

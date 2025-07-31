@@ -174,6 +174,7 @@ const sendBookingConfirmationEmail = inngest.createFunction(
     // Debug logs add karo
     console.log("📧 Booking found:", !!booking);
     console.log("👤 User found:", !!booking?.user);
+    console.log("👤 User found details:", !!booking?.user);
     console.log("✉️ User email:", booking?.user?.email);
     console.log("🎬 Movie title:", booking?.show?.movie?.Title);
 
