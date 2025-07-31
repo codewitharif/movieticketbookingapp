@@ -142,7 +142,7 @@ const getOccupiedSeats = async (req, res) => {
 //       for (let seat of selectedSeats) {
 //         show.occupiedSeats[seat] = true;
 //       }
-      
+
 //       await show.save({ session: dbSession });
 //       // Commit transaction
 //       await dbSession.commitTransaction();
@@ -263,7 +263,7 @@ const createBooking = async (req, res) => {
     console.log("📊 Show before booking:", {
       occupiedSeats: showForPricing.occupiedSeats,
       totalSeats: showForPricing.totalSeats,
-      status: showForPricing.status
+      status: showForPricing.status,
     });
 
     // Calculate total amount
@@ -288,10 +288,10 @@ const createBooking = async (req, res) => {
 
       // Get show WITH transaction session
       const showWithSession = await Show.findById(showId).session(dbSession);
-      
+
       console.log("🎭 Show with session before update:", {
         occupiedSeats: showWithSession.occupiedSeats,
-        status: showWithSession.status
+        status: showWithSession.status,
       });
 
       // Double check seats availability within transaction
@@ -308,12 +308,14 @@ const createBooking = async (req, res) => {
       }
 
       // Mark the occupiedSeats as modified (IMPORTANT!)
-      showWithSession.markModified('occupiedSeats');
+      showWithSession.markModified("occupiedSeats");
 
       // Update status if needed
       const occupiedCount = Object.keys(showWithSession.occupiedSeats).length;
-      console.log(`📈 Occupied count: ${occupiedCount}/${showWithSession.totalSeats}`);
-      
+      console.log(
+        `📈 Occupied count: ${occupiedCount}/${showWithSession.totalSeats}`
+      );
+
       if (occupiedCount >= showWithSession.totalSeats) {
         showWithSession.status = "sold-out";
         console.log("🚫 Show marked as sold-out");
@@ -330,20 +332,62 @@ const createBooking = async (req, res) => {
       const verifyShow = await Show.findById(showId);
       console.log("🔍 Verification - Show after commit:", {
         occupiedSeats: verifyShow.occupiedSeats,
-        status: verifyShow.status
+        status: verifyShow.status,
       });
 
       // Rest of your Stripe and response code...
       // [Keep the existing Stripe code as is]
+
+      // Stripe gateway initialize
+      const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
+
+      const line_items = [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: showForPricing.movie.Title || showId,
+            },
+            unit_amount: Math.floor(totalAmount) * 100,
+          },
+          quantity: 1,
+        },
+      ];
+
+      const stripeSession = await stripeInstance.checkout.sessions.create({
+        success_url: `${origin}/mybookings`,
+        cancel_url: `${origin}/mybookings`,
+        line_items: line_items,
+        mode: "payment",
+        metadata: {
+          bookingId: newBooking._id.toString(),
+        },
+        expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
+      });
+
+      // Update payment link (outside transaction)
+      newBooking.paymentLink = stripeSession.url;
+      await newBooking.save();
+
+      // Send Inngest event
+      try {
+        await inngest.send({
+          name: "app/checkpayment",
+          data: {
+            bookingId: newBooking._id.toString(),
+          },
+        });
+      } catch (inngestError) {
+        console.error("Inngest error:", inngestError);
+      }
 
       res.status(201).json({
         success: true,
         message: "Booking created successfully",
         booking: newBooking,
         bookingId: newBooking._id,
-        // url: stripeSession.url,
+        url: stripeSession.url,
       });
-
     } catch (transactionError) {
       console.error("💥 Transaction error:", transactionError.message);
       await dbSession.abortTransaction();
