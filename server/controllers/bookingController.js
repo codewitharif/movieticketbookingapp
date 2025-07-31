@@ -139,7 +139,7 @@ const createBooking = async (req, res) => {
 
       // Update occupied seats in show using Show model method
       for (let seat of selectedSeats) {
-        await show.occupiedSeats(seat);
+        await show.bookSeat(seat);
       }
 
       // Commit transaction
