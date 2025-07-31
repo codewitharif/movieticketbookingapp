@@ -7,14 +7,19 @@ import { toast } from "react-toastify";
 
 const Favourites = () => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
+  // const [loading, setLoading] = false;
   const { getToken } = useAuth();
-  const { loading, fetchFavoriteMovies: fetchFavoritesFromStore } =
-    useMovieStore();
+  const {
+    loading,
+    setLoading,
+    fetchFavoriteMovies: fetchFavoritesFromStore,
+  } = useMovieStore();
 
   // Fetch favorites on mount
   useEffect(() => {
     const fetchFavorites = async () => {
       try {
+        setLoading(true);
         const token = await getToken();
         const { data } = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/api/user/favourites`,
@@ -25,6 +30,7 @@ const Favourites = () => {
 
         if (data.success) {
           setFavoriteMovies(data.movies);
+          setLoading(false);
         }
       } catch (error) {
         console.error("Error fetching favorites:", error);
@@ -67,19 +73,33 @@ const Favourites = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 px-4 py-8">
-      <h1 className="text-3xl font-bold text-white mb-6 ml-12">
-        Your Favourites
-      </h1>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-white mb-4">My Favourites</h1>
+          <p className="text-xl text-slate-400">
+            View and manage your favourites
+          </p>
+        </div>
+      </div>
 
       {loading ? (
-        <div className="min-h-screen bg-slate-800 flex items-center justify-center">
-          <div className="flex items-center text-white">
+        <div className="min-h-screen flex justify-center">
+          <div className="flex justify-center text-white">
             <Loader className="w-6 h-6 animate-spin mr-2" />
             Loading Favourite Movies...
           </div>
         </div>
-      ) : favoriteMovies.length > 0 ? (
+      ) : favoriteMovies.length === 0 ? (
+        <div className="text-center py-16">
+          <Heart className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+          <h3 className="text-2xl font-semibold text-white mb-2">
+            No favorites found
+          </h3>
+          <p className="text-slate-400">You haven't made any favorites yet.</p>
+        </div>
+      ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {favoriteMovies.map((movie) => {
             const isFav = favoriteMovies.some((m) => m._id === movie._id);
@@ -142,13 +162,6 @@ const Favourites = () => {
               </div>
             );
           })}
-        </div>
-      ) : (
-        <div className="flex items-center justify-left ml-12">
-          <div className="flex items-center text-white">
-            <Loader className="w-6 h-6 animate-spin mr-2" />
-            Loading Favourite Movies...
-          </div>
         </div>
       )}
     </div>

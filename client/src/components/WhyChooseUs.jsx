@@ -12,35 +12,39 @@ export default function WhyChooseUs() {
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">
-          <div className="text-center group">
-            <div className="w-20 h-20 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Users className="w-10 h-10 text-white" />
+          {[
+            {
+              icon: <Users className="w-10 h-10 text-white" />,
+              title: 'Premium Comfort',
+              desc: 'Enjoy our luxury recliner seats with extra legroom, personal side tables, and premium sound systems for the ultimate comfort experience.',
+              gradient: 'from-emerald-500 to-cyan-500'
+            },
+            {
+              icon: <Calendar className="w-10 h-10 text-white" />,
+              title: 'Easy Booking',
+              desc: 'Book your tickets instantly through our intuitive interface with secure payment options and real-time seat selection.',
+              gradient: 'from-purple-500 to-pink-500'
+            },
+            {
+              icon: <MapPin className="w-10 h-10 text-white" />,
+              title: 'Prime Locations',
+              desc: 'Find us in convenient locations across the city with ample parking, easy public transport access, and nearby dining options.',
+              gradient: 'from-orange-500 to-red-500'
+            }
+          ].map((card, index) => (
+            <div
+              key={index}
+              className="text-center group bg-slate-700/30 border border-slate-600 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-[1.03]"
+            >
+              <div
+                className={`w-20 h-20 bg-gradient-to-r ${card.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6 transform transition-transform duration-300 group-hover:rotate-6`}
+              >
+                {card.icon}
+              </div>
+              <h4 className="text-2xl font-semibold text-white mb-4">{card.title}</h4>
+              <p className="text-slate-400 leading-relaxed">{card.desc}</p>
             </div>
-            <h4 className="text-2xl font-semibold text-white mb-4">Premium Comfort</h4>
-            <p className="text-slate-400 leading-relaxed">
-              Enjoy our luxury recliner seats with extra legroom, personal side tables, and premium sound systems for the ultimate comfort experience.
-            </p>
-          </div>
-          
-          <div className="text-center group">
-            <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-              <Calendar className="w-10 h-10 text-white" />
-            </div>
-            <h4 className="text-2xl font-semibold text-white mb-4">Easy Booking</h4>
-            <p className="text-slate-400 leading-relaxed">
-              Book your tickets instantly through our intuitive interface with secure payment options and real-time seat selection.
-            </p>
-          </div>
-          
-          <div className="text-center group">
-            <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
-              <MapPin className="w-10 h-10 text-white" />
-            </div>
-            <h4 className="text-2xl font-semibold text-white mb-4">Prime Locations</h4>
-            <p className="text-slate-400 leading-relaxed">
-              Find us in convenient locations across the city with ample parking, easy public transport access, and nearby dining options.
-            </p>
-          </div>
+          ))}
         </div>
       </div>
     </section>

@@ -43,7 +43,9 @@ const UserBookings = () => {
       const userId = clerkUser?.id;
 
       console.log(userId);
-      const { data } = await axios.get(`/api/bookings/user/${userId}`);
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/bookings/user/${userId}`
+      );
       console.log("this is api res fata1", data);
 
       if (data.success) {
@@ -62,9 +64,12 @@ const UserBookings = () => {
     }
 
     try {
-      const response = await fetch(`/api/bookings/${bookingId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/bookings/${bookingId}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await response.json();
 
       if (data.success) {
@@ -102,16 +107,13 @@ const UserBookings = () => {
     return isPaid ? "Paid" : "Pending Payment";
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-800 flex items-center justify-center ml-12">
-        <div className="flex items-center text-white">
-          <Loader className="w-6 h-6 animate-spin mr-2" />
-          Loading Bookings...
-        </div>
-      </div>
-    );
-  }
+  if (!isLoaded || !clerkUser) {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-white">
+      Please sign in to view your bookings.
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 py-8">
@@ -123,9 +125,14 @@ const UserBookings = () => {
             View and manage your movie bookings
           </p>
         </div>
-
-        {/* Bookings List */}
-        {bookings.length === 0 ? (
+        {loading ? (
+          <div className="min-h-screen flex justify-center">
+            <div className="flex justify-center text-white">
+              <Loader className="w-6 h-6 animate-spin mr-2" />
+              Loading Bookings...
+            </div>
+          </div>
+        ) : bookings?.length === 0 ? (
           <div className="text-center py-16">
             <Ticket className="w-16 h-16 text-slate-600 mx-auto mb-4" />
             <h3 className="text-2xl font-semibold text-white mb-2">
@@ -135,7 +142,7 @@ const UserBookings = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {bookings.map((booking) => (
+            {bookings?.map((booking) => (
               <div
                 key={booking._id}
                 className="bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-all duration-300 overflow-hidden cursor-pointer"
@@ -197,8 +204,8 @@ const UserBookings = () => {
 
                     <div className="flex items-center">
                       <Users className="w-4 h-4 mr-2 text-emerald-400" />
-                      {booking.bookedSeats?.length} seats:{" "}
-                      {booking.bookedSeats?.join(", ")}
+                      {booking.bookedSeats?.length || 0} seats:{" "}
+                      {booking.bookedSeats?.join(", ") || ""}
                     </div>
 
                     <div className="flex items-center">

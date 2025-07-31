@@ -115,14 +115,17 @@ export default function Navbar({ setShowBooking }) {
               </div>
             ) : (
               <>
+                {/* Sign In button only for large screens and up */}
                 <button
                   onClick={() => openSignIn()}
-                  className="hidden md:block bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all"
+                  className="hidden lg:block bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all"
                 >
                   Sign In
                 </button>
+
+                {/* Hamburger icon only for small screens */}
                 <button
-                  className="lg:hidden text-white"
+                  className="lg:hidden text-white ml-2"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   {isMenuOpen ? (
@@ -170,6 +173,14 @@ export default function Navbar({ setShowBooking }) {
               >
                 Favourites
               </Link>
+              {!user && (
+                <button
+                  onClick={() => openSignIn()}
+                  className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition-all text-left"
+                >
+                  Sign In
+                </button>
+              )}
             </nav>
           </div>
         )}

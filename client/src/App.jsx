@@ -14,7 +14,7 @@ import AddMovie from "./components/AddMovie";
 import BookingsList from "./components/BookingList";
 import AdminHome from "./components/AdminHome";
 import AdminDashboard from "./pages/AdminDashboard";
-import { useUser, SignIn } from "@clerk/clerk-react";
+import { useUser, SignIn, Protect } from "@clerk/clerk-react";
 
 // Store
 import useMovieStore from "./store/useMovieStore";
@@ -27,6 +27,7 @@ import NotFound404 from "./pages/NotFound";
 import Favourites from "./components/Favourites";
 import UserBookings from "./components/UserBookings";
 import Loading from "./components/Loading";
+import ProtectedUserRoute from "./components/ProtectUserRotes";
 
 export default function App() {
   return (
@@ -55,16 +56,7 @@ export default function App() {
             </>
           }
         />
-        <Route
-          path="/mybooking"
-          element={
-            <>
-              <Navbar />
-              <MyBookings />
-              <Footer />
-            </>
-          }
-        />
+ 
 
         <Route
           path="/admin/sign-in"
@@ -78,26 +70,37 @@ export default function App() {
             </div>
           }
         />
+        <Route
+          path="/sign-in"
+          element={
+            <div className="flex justify-center items-center min-h-screen">
+              <SignIn routing="path" path="/sign-in" redirectUrl="/" />
+            </div>
+          }
+        />
 
-        <Route path="*" element={<NotFound404 />} />
         <Route
           path="/favourites"
           element={
-            <>
-              <Navbar />
-              <Favourites />
-              <Footer />
-            </>
+            <ProtectedUserRoute>
+              <>
+                <Navbar />
+                <Favourites />
+                <Footer />
+              </>
+            </ProtectedUserRoute>
           }
         />
         <Route
           path="/mybookings"
           element={
-            <>
-              <Navbar />
-              <UserBookings />
-              <Footer />
-            </>
+            <ProtectedUserRoute>
+              <>
+                <Navbar />
+                <UserBookings />
+                <Footer />
+              </>
+            </ProtectedUserRoute>
           }
         />
         <Route
@@ -110,6 +113,8 @@ export default function App() {
             </>
           }
         />
+
+        <Route path="*" element={<NotFound404 />} />
 
         {/* Admin Routes */}
         <Route

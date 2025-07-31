@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function HeroSlider({ featuredMovies }) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -17,10 +17,10 @@ export default function HeroSlider({ featuredMovies }) {
         <div
           key={movie.id}
           className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === currentSlide ? 'opacity-100' : 'opacity-0'
+            index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${movie.poster})` }}
           >
@@ -35,18 +35,30 @@ export default function HeroSlider({ featuredMovies }) {
               <div className="flex items-center space-x-6 mb-8">
                 <div className="flex items-center space-x-2">
                   <Star className="w-5 h-5 text-yellow-400" />
-                  <span className="text-white font-semibold">{movie.rating}</span>
+                  <span className="text-white font-semibold">
+                    {movie.rating}
+                  </span>
                 </div>
                 <span className="text-slate-300">{movie.genre}</span>
                 <span className="text-slate-300">{movie.duration}</span>
               </div>
               <div className="flex space-x-4">
-                <button className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-                  Book Tickets
-                </button>
-                <button className="bg-slate-800/80 backdrop-blur-sm text-white px-8 py-3 rounded-xl font-semibold hover:bg-slate-700 transition-colors border border-slate-700">
-                  Watch Trailer
-                </button>
+                <div className="flex space-x-4 flex-wrap sm:flex-nowrap">
+                  <button
+                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white 
+    px-4 py-2 sm:px-8 sm:py-3 text-sm sm:text-base 
+    rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                  >
+                    Book Tickets
+                  </button>
+                  <button
+                    className="bg-slate-800/80 backdrop-blur-sm text-white 
+    px-4 py-2 sm:px-8 sm:py-3 text-sm sm:text-base 
+    rounded-xl font-semibold hover:bg-slate-700 transition-colors border border-slate-700"
+                  >
+                    Watch Trailer
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -55,13 +67,19 @@ export default function HeroSlider({ featuredMovies }) {
 
       {/* Slider Controls */}
       <button
-        onClick={() => setCurrentSlide((prev) => (prev - 1 + featuredMovies.length) % featuredMovies.length)}
+        onClick={() =>
+          setCurrentSlide(
+            (prev) => (prev - 1 + featuredMovies.length) % featuredMovies.length
+          )
+        }
         className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
       <button
-        onClick={() => setCurrentSlide((prev) => (prev + 1) % featuredMovies.length)}
+        onClick={() =>
+          setCurrentSlide((prev) => (prev + 1) % featuredMovies.length)
+        }
         className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
       >
         <ChevronRight className="w-6 h-6" />
@@ -74,7 +92,7 @@ export default function HeroSlider({ featuredMovies }) {
             key={index}
             onClick={() => setCurrentSlide(index)}
             className={`w-3 h-3 rounded-full transition-colors ${
-              index === currentSlide ? 'bg-emerald-400' : 'bg-white/50'
+              index === currentSlide ? "bg-emerald-400" : "bg-white/50"
             }`}
           />
         ))}
