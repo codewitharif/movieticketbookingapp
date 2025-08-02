@@ -8,15 +8,15 @@ axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 export const featuredMovies = [
   {
     id: 1,
-    title: "Guardians of the Galaxy Vol. 3",
-    genre: "Action • Adventure • Comedy",
-    rating: 8.4,
-    duration: "2h 30min",
+    title: "Pushpa 2: The Rule",
+    genre: "Action • Crime • Drama",
+    rating: 8.7,
+    duration: "2h 45min",
     poster:
-      "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=1200&h=600&fit=crop",
+      "https://imgs.search.brave.com/2cDLqv2Q9OtC60_aDFV9sxbO1WIjlRoxRDV9WSrDAWw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJhY2Nlc3Mu/Y29tL2Z1bGwvOTU1/NzQ4Ny5qcGc",
     description:
-      "The beloved Guardians embark on their final adventure in this epic conclusion to the trilogy.",
-    price: 15,
+      "Pushpa returns stronger and more ruthless as he faces off against Bhanwar Singh in a high-stakes battle for supremacy.",
+    price: 18,
   },
   {
     id: 2,
@@ -41,6 +41,30 @@ export const featuredMovies = [
     description:
       "Chanderi is haunted once again as Stree returns. The gang reunites to uncover the mystery behind her reappearance.",
     price: 13,
+  },
+  {
+    id: 4,
+    title: "Jawan",
+    genre: "Action • Thriller • Drama",
+    rating: 7.9,
+    duration: "2h 49min",
+    poster:
+      "https://imgs.search.brave.com/-EdIXfYEMXWJW4_6SvD_ex8PLDieM_ggwl5n4tR5HF0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL00v/TVY1QlkySmhPVE14/WkdZdFpHVTNNUzAw/WlRsbExUbGpNakV0/WXpWalpUSXhaV05t/TTJSbFhrRXlYa0Zx/Y0djQC5qcGc",
+    description:
+      "A man driven by a personal vendetta sets out to correct the wrongs in society, taking on a corrupt system with a daring plan.",
+    price: 17,
+  },
+  {
+    id: 5,
+    title: "Sitaare Zameen Par",
+    genre: "Sports • Drama • Comedy",
+    rating: 8.5,
+    duration: "2h 38min",
+    poster:
+      "https://imgs.search.brave.com/Tpo6yakug7dFqst8f04gwHc6ww_0PNPnmluv5dTUcd8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/a29pbW9pLmNvbS93/cC1jb250ZW50L25l/dy1nYWxsZXJpZXMv/MjAyNS8wNi9zaXRh/YXJlLXphbWVlbi1w/YXItbW92aWUtcmV2/aWV3LTIuanBn",
+    description:
+      "A suspended basketball coach is ordered to train a team of players with disabilities, leading to an emotional journey of growth, inclusion, and triumph.",
+    price: 20,
   },
 ];
 
@@ -314,9 +338,9 @@ const useMovieStore = create((set, get) => ({
 
       const token = await getToken();
       const { data } = await axios.post("/api/bookings/create", bookingData, {
-        headers: { 
+        headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -324,7 +348,11 @@ const useMovieStore = create((set, get) => ({
         set({ loading: false });
         // Clear selected seats after successful booking
         set({ selectedSeats: [] });
-        return { success: true, booking: data.booking, bookingId: data.bookingId };
+        return {
+          success: true,
+          booking: data.booking,
+          bookingId: data.bookingId,
+        };
       } else {
         set({ error: data.message, loading: false });
         return { success: false, message: data.message };
@@ -332,7 +360,10 @@ const useMovieStore = create((set, get) => ({
     } catch (error) {
       console.log("Error creating booking:", error);
       set({ error: "Failed to create booking", loading: false });
-      return { success: false, message: error.response?.data?.message || "Failed to create booking" };
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to create booking",
+      };
     }
   },
 
@@ -430,9 +461,13 @@ const useMovieStore = create((set, get) => ({
       }
 
       const token = await getToken();
-      const { data } = await axios.put(`/api/bookings/${bookingId}/cancel`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.put(
+        `/api/bookings/${bookingId}/cancel`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (data.success) {
         set({ loading: false });
@@ -477,7 +512,7 @@ const useMovieStore = create((set, get) => ({
       return false;
     }
   },
-  
+
   setSelectedShow: (show) => set({ selectedShow: show }),
 
   // Dummy Actions for current frontend
