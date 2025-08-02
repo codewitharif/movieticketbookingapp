@@ -7,9 +7,7 @@ import { toast } from "react-toastify";
 
 export default function MovieCard({ movie, shows }) {
   const navigate = useNavigate();
-  const {
-    handleSelectedMovie
-  } = useMovieStore();
+  const { handleSelectedMovie } = useMovieStore();
   const { getToken } = useAuth();
   // const isFav = isFavorite(movie._id);
 
@@ -17,8 +15,6 @@ export default function MovieCard({ movie, shows }) {
     handleSelectedMovie(movie);
     navigate(`/booking/${movie._id}`);
   };
-
-
 
   const uniqueDates = [
     ...new Set(
@@ -99,7 +95,7 @@ export default function MovieCard({ movie, shows }) {
               <span className="text-xl font-bold text-emerald-400">
                 ₹{minPrice}
               </span>
-              <span className="text-slate-400 text-xs ml-1">/ onwards</span>
+              <span className="text-slate-400 text-xs ml-1">/ ticket</span>
             </div>
             <button
               onClick={bookShow}

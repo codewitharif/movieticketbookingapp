@@ -20,7 +20,7 @@ export default function Footer() {
                 <Play className="w-5 h-5 text-white" />
               </div>
               <h4 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                CinemaVibe
+                IndieShows
               </h4>
             </div>
             <p className="text-slate-400 mb-4">
@@ -170,8 +170,7 @@ export default function Footer() {
 
         <div className="border-t border-slate-800 pt-8 text-center">
           <p className="text-slate-400">
-            © 2025 CinemaVibe. All rights reserved. | Designed with ❤️ for movie
-            lovers
+            © 2025 IndieShows. All rights reserved.
           </p>
         </div>
       </div>

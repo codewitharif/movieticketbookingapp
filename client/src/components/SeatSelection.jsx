@@ -1,4 +1,4 @@
-import { CreditCard, Loader } from "lucide-react";
+import { CreditCard, Loader, LogIn } from "lucide-react";
 import { useState } from "react";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
@@ -13,14 +13,11 @@ export default function SeatSelection({
   fetchOccupiedSeats,
 }) {
   const navigate = useNavigate();
-  const user = useUser();
+  const { user, isSignedIn } = useUser();
   const { getToken } = useAuth();
   const [bookingLoading, setBookingLoading] = useState(false);
 
   const { selectedSeats, setSelectedSeats, selectedMovie } = useMovieStore();
-
-  console.log("my user is ", user);
-  console.log("my user is ", user.user.id);
 
   // Generate seats layout
   const generateSeats = () => {
@@ -63,6 +60,13 @@ export default function SeatSelection({
 
     if (status === "booked") return;
 
+    // Check if user is logged in
+    if (!isSignedIn) {
+      toast.error("Please login to select seats");
+      navigate("/sign-in");
+      return;
+    }
+
     if (status === "selected") {
       // Remove seat from selection
       setSelectedSeats(selectedSeats.filter((s) => s !== seat));
@@ -78,8 +82,9 @@ export default function SeatSelection({
 
   // Handle booking creation
   const handleBooking = async () => {
-    if (!user) {
+    if (!isSignedIn) {
       toast.error("Please login to book tickets");
+      navigate("/sign-in");
       return;
     }
 
@@ -93,11 +98,10 @@ export default function SeatSelection({
       const token = await getToken();
 
       const bookingData = {
-        userId: user.user.id,
+        userId: user.id,
         showId: selectedShow._id,
         selectedSeats: selectedSeats,
       };
-      console.log("my booking data is ", bookingData);
 
       const response = await axios.post("/api/bookings/create", bookingData, {
         headers: {
@@ -115,10 +119,8 @@ export default function SeatSelection({
         // Clear selected seats
         setSelectedSeats([]);
 
-        // Navigate to booking confirmation or payment page
-        // navigate("/mybookings");
+        // Navigate to payment
         window.location.href = response.data.url;
-        // navigate(`/booking-confirmation/${response.data.bookingId}`);
       } else {
         toast.error(response.data.message || "Booking failed");
       }
@@ -144,6 +146,26 @@ export default function SeatSelection({
         Choose Your Seats
       </h3>
 
+      {/* Login Warning for non-authenticated users */}
+      {!isSignedIn && (
+        <div className="bg-yellow-600/20 border border-yellow-500/30 rounded-xl p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <LogIn className="w-5 h-5 text-yellow-400" />
+              <p className="text-yellow-200">
+                You can view seats but need to login to book tickets
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/sign-in")}
+              className="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Login Now
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Screen */}
       <div className="relative mb-12">
         <div className="h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full mb-4"></div>
@@ -153,7 +175,6 @@ export default function SeatSelection({
       </div>
 
       {/* Seats Grid */}
-      {/* Seats Grid - Mobile Responsive with Vertical Layout */}
       <div className="mb-8 w-full">
         {/* Mobile Layout - Compact Vertical */}
         <div className="block sm:hidden px-4">
@@ -229,7 +250,6 @@ export default function SeatSelection({
           ))}
         </div>
       </div>
-      {/* seat view end  */}
 
       {/* Legend */}
       <div className="flex justify-center space-x-8 mb-8">
@@ -294,23 +314,36 @@ export default function SeatSelection({
             </div>
           </div>
 
-          <button
-            onClick={handleBooking}
-            disabled={bookingLoading || selectedSeats.length === 0}
-            className="w-full bg-white text-emerald-600 py-4 rounded-xl font-bold text-lg hover:bg-emerald-50 transition-colors flex items-center justify-center space-x-3 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {bookingLoading ? (
-              <>
-                <Loader className="w-6 h-6 animate-spin" />
-                <span>Creating Booking...</span>
-              </>
-            ) : (
-              <>
-                <CreditCard className="w-6 h-6" />
-                <span>Book Now</span>
-              </>
-            )}
-          </button>
+          {isSignedIn ? (
+            <button
+              onClick={handleBooking}
+              disabled={bookingLoading || selectedSeats.length === 0}
+              className="w-full bg-white text-emerald-600 py-4 rounded-xl font-bold text-lg hover:bg-emerald-50 transition-colors flex items-center justify-center space-x-3 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {bookingLoading ? (
+                <>
+                  <Loader className="w-6 h-6 animate-spin" />
+                  <span>Creating Booking...</span>
+                </>
+              ) : (
+                <>
+                  <CreditCard className="w-6 h-6" />
+                  <span>Book Now</span>
+                </>
+              )}
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                toast.info("Please login to proceed with booking");
+                navigate("/sign-in");
+              }}
+              className="w-full bg-yellow-500 text-black py-4 rounded-xl font-bold text-lg hover:bg-yellow-600 transition-colors flex items-center justify-center space-x-3 shadow-lg"
+            >
+              <LogIn className="w-6 h-6" />
+              <span>Login to Book</span>
+            </button>
+          )}
         </div>
       )}
 

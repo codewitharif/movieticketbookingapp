@@ -28,7 +28,7 @@ export default function Navbar({ setShowBooking }) {
                 <Play className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                CinemaVibe
+                IndieShows
               </h1>
             </div>
             <button
@@ -54,7 +54,7 @@ export default function Navbar({ setShowBooking }) {
               <Play className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              CinemaVibe
+              IndieShows
             </h1>
           </div>
 
