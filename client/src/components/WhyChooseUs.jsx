@@ -3,7 +3,7 @@ import { Users, Calendar, MapPin } from 'lucide-react';
 export default function WhyChooseUs() {
   return (
     <section className="py-16 bg-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="text-center mb-12">
           <h3 className="text-4xl font-bold text-white mb-4">Why Choose CinemaVibe?</h3>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
@@ -34,7 +34,7 @@ export default function WhyChooseUs() {
           ].map((card, index) => (
             <div
               key={index}
-              className="text-center group bg-slate-700/30 border border-slate-600 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-[1.03]"
+              className="text-center group bg-slate-700/30 border border-slate-600 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-[1.03] hover:border-emerald-500/50 transition-all duration-300"
             >
               <div
                 className={`w-20 h-20 bg-gradient-to-r ${card.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6 transform transition-transform duration-300 group-hover:rotate-6`}
