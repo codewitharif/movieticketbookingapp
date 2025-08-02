@@ -62,7 +62,7 @@ export default function SeatSelection({
 
     // Check if user is logged in
     if (!isSignedIn) {
-      toast.error("Please login to select seats");
+      // toast.error("Please login to select seats");
       navigate("/sign-in");
       return;
     }
@@ -83,7 +83,7 @@ export default function SeatSelection({
   // Handle booking creation
   const handleBooking = async () => {
     if (!isSignedIn) {
-      toast.error("Please login to book tickets");
+      // toast.error("Please login to book tickets");
       navigate("/sign-in");
       return;
     }
