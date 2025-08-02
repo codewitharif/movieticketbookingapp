@@ -275,7 +275,7 @@ const sendNewShowNotifications = inngest.createFunction(
   { event: "app/show.added" },
 
   async ({ event }) => {
-    const { movieTitle, moviePoster, showDate, showTime } = event.data;
+    const { movieId, movieTitle, moviePoster, showDate, showTime } = event.data;
 
     const users = await User.find({});
     for (const user of users) {
@@ -294,11 +294,18 @@ const sendNewShowNotifications = inngest.createFunction(
             <p>Hi <strong>${userName}</strong>,</p>
             <p>Exciting news! A new show of <strong>${movieTitle}</strong> is now available for booking.</p>
 
-            ${
-              moviePoster
-                ? `<div style="text-align:center;"><img src="${moviePoster}" alt="${movieTitle}" style="max-width:100%; height:auto; border-radius:8px; margin: 15px 0;" /></div>`
-                : ""
-            }
+       ${
+         moviePoster
+           ? `<div style="text-align:center;">
+         <img 
+           src="${moviePoster}" 
+           alt="${movieTitle}" 
+           style="width: 300px; max-width: 100%; height: auto; border-radius: 8px; margin: 15px 0;" 
+         />
+       </div>`
+           : ""
+       }
+
 
             ${
               showDate && showTime
@@ -316,7 +323,7 @@ const sendNewShowNotifications = inngest.createFunction(
             </p>
 
             <div style="text-align: center; margin-top: 20px;">
-              <a href="https://yourdomain.com/bookings" style="background-color: #2563eb; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Book Now</a>
+              <a href="https://movieticketbookingapp.vercel.app/booking/${movieId}" style="background-color: #2563eb; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Book Now</a>
             </div>
 
             <p style="color: #555; font-size: 14px; margin-top: 20px;">If you have any questions, feel free to contact our support team.</p>

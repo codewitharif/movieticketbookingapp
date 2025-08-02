@@ -93,6 +93,7 @@ exports.createShow = async (req, res) => {
         return inngest.send({
           name: "app/show.added",
           data: {
+            movieId: show.movie,
             movieTitle: populatedMovie.Title,
             moviePoster: populatedMovie.Poster,
             showDate: show.showDate,
