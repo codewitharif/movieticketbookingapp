@@ -1,6 +1,6 @@
 const Show = require("../models/show");
 const Movie = require("../models/movie");
-const inngest = require("../inngest/index");
+const { inngest } = require("../inngest/index");
 
 exports.createShow = async (req, res) => {
   try {
