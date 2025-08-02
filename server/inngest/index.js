@@ -250,12 +250,96 @@ const sendBookingConfirmationEmail = inngest.createFunction(
   }
 );
 
+// const sendNewShowNotifications = inngest.createFunction(
+//     { id: "send-new-show-notifications" },
+//   { event: "app/show.added" },
+
+//   async ({event})=>{
+//     const {movieTitle} = event.data;
+
+//     const users = await User.find({})
+//     for(const user of users){
+//       const userEmail = user.email;
+//       const userName = user.name;
+
+//       const subject = `New Show Added ${movieTitle}`;
+//       const body = ``
+//     }
+//   }
+// )
+
 // Export functions
+
+const sendNewShowNotifications = inngest.createFunction(
+  { id: "send-new-show-notifications" },
+  { event: "app/show.added" },
+
+  async ({ event }) => {
+    const { movieTitle, moviePoster, showDate, showTime } = event.data;
+
+    const users = await User.find({});
+    for (const user of users) {
+      const userEmail = user.email;
+      const userName = user.name || "Guest";
+
+      const subject = `🎬 New Show Alert: ${movieTitle} is Now Live!`;
+
+      const body = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+        <div style="max-width: 600px; margin: auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="background-color: #111827; color: white; padding: 20px;">
+            <h2 style="margin: 0;">🎬 New Show Added!</h2>
+          </div>
+          <div style="padding: 20px;">
+            <p>Hi <strong>${userName}</strong>,</p>
+            <p>Exciting news! A new show of <strong>${movieTitle}</strong> is now available for booking.</p>
+
+            ${
+              moviePoster
+                ? `<div style="text-align:center;"><img src="${moviePoster}" alt="${movieTitle}" style="max-width:100%; height:auto; border-radius:8px; margin: 15px 0;" /></div>`
+                : ""
+            }
+
+            ${
+              showDate && showTime
+                ? `<p><strong>🗓️ Date:</strong> ${new Date(
+                    showDate
+                  ).toLocaleDateString("en-IN", {
+                    timeZone: "Asia/Kolkata",
+                  })}<br>
+                   <strong>⏰ Time:</strong> ${showTime}</p>`
+                : ""
+            }
+
+            <p style="margin-top: 20px;">
+              Don’t miss out – book your seats now and enjoy the show! 🍿
+            </p>
+
+            <div style="text-align: center; margin-top: 20px;">
+              <a href="https://yourdomain.com/bookings" style="background-color: #2563eb; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Book Now</a>
+            </div>
+
+            <p style="color: #555; font-size: 14px; margin-top: 20px;">If you have any questions, feel free to contact our support team.</p>
+          </div>
+          <div style="background-color: #f9fafb; text-align: center; padding: 15px; color: #888; font-size: 12px;">
+            &copy; ${new Date().getFullYear()} IndieShows. All rights reserved.
+          </div>
+        </div>
+      </div>
+      `;
+
+      // Send email using your preferred mailer (e.g. nodemailer or res.sendEmail if Inngest supports it)
+      await sendEmail({ to: userEmail, subject, body });
+    }
+  }
+);
+
 const functions = [
   syncUserCreation,
   syncUserUpdate,
   syncUserDeletion,
   releaseSeatsAndDeleteBooking,
   sendBookingConfirmationEmail,
+  sendNewShowNotifications,
 ];
 module.exports = { inngest, functions };

@@ -1,5 +1,6 @@
 const Show = require("../models/show");
 const Movie = require("../models/movie");
+const inngest = require("../inngest/index");
 
 exports.createShow = async (req, res) => {
   try {
@@ -84,6 +85,22 @@ exports.createShow = async (req, res) => {
 
     // Create all shows using insertMany for better performance
     const savedShows = await Show.insertMany(showsToCreate);
+    //trigger inngest function to send emails
+    await Promise.all(
+      savedShows.map(async (show) => {
+        const populatedMovie = await Movie.findById(show.movie);
+
+        return inngest.send({
+          name: "app/show.added",
+          data: {
+            movieTitle: populatedMovie.Title,
+            moviePoster: populatedMovie.Poster,
+            showDate: show.showDate,
+            showTime: show.showTime,
+          },
+        });
+      })
+    );
 
     res.status(201).json({
       success: true,
@@ -352,7 +369,7 @@ exports.getShowsByDateRange = async (req, res) => {
 // Get active shows only
 exports.getActiveShows = async (req, res) => {
   try {
-    const shows = await Show.find({ status: 'active' })
+    const shows = await Show.find({ status: "active" })
       .populate("movie")
       .sort({ showDate: 1, showTime: 1 });
 
