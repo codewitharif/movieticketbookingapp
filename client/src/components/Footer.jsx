@@ -156,13 +156,11 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-400">info@indiemovies.com</span>
+                <span className="text-slate-400">info@indieshows.com</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-400">
-                  123 Cinema Street, Movie City
-                </span>
+                <span className="text-slate-400">Movie City, Bhopal</span>
               </div>
             </div>
           </div>

@@ -12,13 +12,14 @@ import {
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const { id } = useParams();
 
   // Mock user ID - replace with actual user ID from auth
   const { isLoaded, user: clerkUser } = useUser();
@@ -29,6 +30,7 @@ const UserBookings = () => {
   //   useEffect(() => {
   //     fetchUserBookings();
   //   }, []);
+  console.log(id);
 
   useEffect(() => {
     if (isLoaded && clerkUser) {
@@ -108,12 +110,12 @@ const UserBookings = () => {
   };
 
   if (!isLoaded || !clerkUser) {
-  return (
-    <div className="min-h-screen flex items-center justify-center text-white">
-      Please sign in to view your bookings.
-    </div>
-  );
-}
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Please sign in to view your bookings.
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 py-8">
@@ -158,6 +160,7 @@ const UserBookings = () => {
                       booking.show?.movie?.Poster || "/placeholder-movie.jpg"
                     }
                     alt={booking.show?.movie?.Title}
+                    draggable={false}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-2 right-2">
@@ -253,6 +256,7 @@ const UserBookings = () => {
                         "/placeholder-movie.jpg"
                       }
                       alt={selectedBooking.show?.movie?.Title}
+                      draggable={false}
                       className="w-full h-64 object-cover rounded-lg mb-4"
                     />
                     <h3 className="text-xl font-bold text-white mb-2">

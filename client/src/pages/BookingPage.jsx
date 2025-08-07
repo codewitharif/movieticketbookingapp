@@ -17,11 +17,12 @@ import axios from "axios";
 
 export default function BookingPage() {
   const navigate = useNavigate();
-  const { id } = useParams();
   const { getToken } = useAuth();
+  const myMovieId = useParams();
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const [occupiedSeats, setOccupiedSeats] = useState({});
   const [loadingSeats, setLoadingSeats] = useState(false);
+  const [selectedShowMovieDetail, setSelectedShowMovieDetail] = useState(null);
 
   const {
     selectedMovie,
@@ -63,30 +64,54 @@ export default function BookingPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (!selectedMovie && !selectedShow) {
-      navigate("/");
-      return;
-    }
 
-    // Get movie ID from either selectedMovie or selectedShow
-    const movieId = selectedMovie?._id || selectedShow?.movie?._id;
+    const movieId =
+      selectedMovie?._id || selectedShow?.movie?._id || myMovieId?.id;
+
+    console.log("selectedMovie?._id", selectedMovie?._id);
+    console.log("selectedShow?.movie?._id", selectedShow?.movie?._id);
+
     if (movieId) {
-      fetchMovieShows(movieId).then((result) => {
-        if (result.success && selectedShow) {
-          // Pre-select date and time if coming from show selection
-          const showDate = new Date(selectedShow.showDate).toDateString();
-          setSelectedDate(showDate);
-          setSelectedTime(selectedShow.showTime);
-          setSelectedShowData(selectedShow);
+      console.log("movieId:", movieId);
 
-          // Fetch occupied seats for this show
-          fetchOccupiedSeats(selectedShow._id);
+      // Use async function inside useEffect
+      const fetchData = async () => {
+        try {
+          const result = await fetchMovieShows(movieId);
+          console.log("my fetch show result is ", result);
+
+          if (result.success) {
+            // Set movie details from the first show's movie data
+            if (
+              result.shows &&
+              result.shows.length > 0 &&
+              result.shows[0].movie
+            ) {
+              setSelectedShowMovieDetail(result.shows[0].movie);
+            }
+
+            // If selectedShow exists, set it up
+            if (selectedShow) {
+              const showDate = new Date(selectedShow.showDate).toDateString();
+              setSelectedDate(showDate);
+              setSelectedTime(selectedShow.showTime);
+              setSelectedShowData(selectedShow);
+
+              // Fetch occupied seats
+              fetchOccupiedSeats(selectedShow._id);
+            }
+          } else {
+            console.error("Error fetching movie shows:");
+          }
+        } catch (error) {
+          console.error("Error fetching movie shows:", error);
         }
-      });
-    }
-  }, [selectedMovie, selectedShow, navigate, fetchMovieShows]);
+      };
 
-  // Fetch favorite movies
+      fetchData();
+    }
+  }, [selectedMovie, selectedShow, myMovieId, fetchMovieShows]);
+
   const fetchFavoriteMovies = async () => {
     try {
       const token = await getToken();
@@ -171,23 +196,30 @@ export default function BookingPage() {
     await fetchOccupiedSeats(showData._id);
   };
 
-  // Get current movie data
-  const currentMovie = selectedShow?.movie || selectedMovie;
+  // Get current movie data with proper fallback
+  const currentMovie =
+    selectedShow?.movie || selectedMovie || selectedShowMovieDetail;
 
-  if (!currentMovie) {
-    return null;
-  }
+  console.log("current movie ", currentMovie);
+  console.log("selected show movie detail ", selectedShowMovieDetail);
 
-  if (loading) {
+  // Show loading if we don't have movie data yet and we have a movieId to fetch
+  const isDirectUrlAccess = myMovieId?.id && !selectedMovie && !selectedShow;
+  const shouldShowLoading =
+    loading || (isDirectUrlAccess && !selectedShowMovieDetail);
+
+  if (shouldShowLoading) {
     return (
       <div className="min-h-screen bg-slate-800 flex items-center justify-center">
         <div className="flex items-center text-white">
           <Loader className="w-6 h-6 animate-spin mr-2" />
-          Loading show times...
+          Loading movie details...
         </div>
       </div>
     );
   }
+
+  // Remove this duplicate loading check since we handle it above
 
   if (error) {
     return (
@@ -219,6 +251,7 @@ export default function BookingPage() {
             <img
               src={currentMovie?.Poster}
               alt={currentMovie?.Title}
+              draggable={false}
               className="w-32 h-48 rounded-xl object-cover shadow-lg"
             />
             <div className="text-white flex-1">

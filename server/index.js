@@ -9,11 +9,6 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const userRoutes = require("./routes/userRoutes");
 
-// const { clerkWebhooks } = require("./controllers/webhooks");
-// const companyRoutes = require("./routes/companyRoutes");
-// const userRoutes = require("./routes/userRoutes");
-// const jobRoutes = require("./routes/jobRoutes");
-// const connectCloudinary = require("./config/cloudinary");
 const { clerkMiddleware } = require("@clerk/express");
 const { inngest, functions } = require("./inngest/index");
 const { serve } = require("inngest/express");
@@ -21,7 +16,6 @@ const { stripeWebhhoks } = require("./controllers/stripeWebhooks");
 
 dotenv.config();
 connectDB();
-// connectCloudinary();
 
 const app = express();
 
@@ -49,10 +43,6 @@ app.use("/api/shows", showRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/user", userRoutes);
-// app.post("/webhooks", clerkWebhooks);
-// app.use("/api/company", companyRoutes);
-// app.use("/api/jobs", jobRoutes);
-// app.use("/api/users", userRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

@@ -14,6 +14,7 @@ export default function MovieCard({ movie, shows }) {
   const bookShow = () => {
     handleSelectedMovie(movie);
     navigate(`/booking/${movie._id}`);
+    
   };
 
   const uniqueDates = [
@@ -30,6 +31,7 @@ export default function MovieCard({ movie, shows }) {
           <img
             src={movie.Poster}
             alt={movie.Title}
+            draggable={false}
             className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
           />
 

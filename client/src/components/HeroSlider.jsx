@@ -45,6 +45,7 @@ export default function HeroSlider({ featuredMovies }) {
               <div className="flex space-x-4">
                 <div className="flex space-x-4 flex-wrap sm:flex-nowrap">
                   <button
+                   onClick={() => window.open(movie?.booking_link, "_blank")}
                     className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white 
     px-4 py-2 sm:px-8 sm:py-3 text-sm sm:text-base 
     rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
@@ -52,6 +53,7 @@ export default function HeroSlider({ featuredMovies }) {
                     Book Tickets
                   </button>
                   <button
+                    onClick={() => window.open(movie?.trailer_link, "_blank")}
                     className="bg-slate-800/80 backdrop-blur-sm text-white 
     px-4 py-2 sm:px-8 sm:py-3 text-sm sm:text-base 
     rounded-xl font-semibold hover:bg-slate-700 transition-colors border border-slate-700"

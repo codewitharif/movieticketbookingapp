@@ -114,6 +114,7 @@ const Favourites = () => {
                     <img
                       src={movie.Poster}
                       alt={movie.Title}
+                      draggable={false}
                       className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
                     />
 
