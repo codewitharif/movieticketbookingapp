@@ -107,7 +107,7 @@ export default function AdminHome() {
           <div className="flex items-center justify-between py-2 border-b border-slate-600">
             <span className="text-slate-300">Active Shows</span>
             <span className="text-emerald-400 font-semibold">
-              {totalActiveShows || 0}
+              {dashboardData?.activeShows || 0}
             </span>
           </div>
           <div className="flex items-center justify-between py-2 border-b border-slate-600">

@@ -80,145 +80,6 @@ const getOccupiedSeats = async (req, res) => {
   }
 };
 
-// Create new booking
-// const createBooking = async (req, res) => {
-//   try {
-//     const { userId, showId, selectedSeats } = req.body;
-//     const { origin } = req.headers;
-
-//     // Validate required fields
-//     if (
-//       !userId ||
-//       !showId ||
-//       !selectedSeats ||
-//       !Array.isArray(selectedSeats) ||
-//       selectedSeats.length === 0
-//     ) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Missing required fields: userId, showId, selectedSeats",
-//       });
-//     }
-
-//     // Check seat availability
-//     const isAvailable = await checkSeatsAvailability(showId, selectedSeats);
-//     if (!isAvailable.available) {
-//       return res.status(400).json({
-//         success: false,
-//         message: isAvailable.message,
-//       });
-//     }
-
-//     // Get show details for pricing
-//     const show = await Show.findById(showId).populate("movie");
-//     if (!show) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Show not found",
-//       });
-//     }
-
-//     // Calculate total amount
-//     const totalAmount = selectedSeats.length * show.showPrice;
-
-//     // Start transaction for booking
-//     const dbSession = await mongoose.startSession();
-//     dbSession.startTransaction();
-
-//     try {
-//       // Create booking
-//       const newBooking = new Booking({
-//         user: userId,
-//         show: showId,
-//         amount: totalAmount,
-//         bookedSeats: selectedSeats,
-//         isPaid: false, // Initially unpaid
-//       });
-
-//       await newBooking.save({ dbSession });
-
-//       // Update show occupied seats INSIDE transaction
-//       const show = await Show.findById(showId).session(dbSession);
-//       for (let seat of selectedSeats) {
-//         show.occupiedSeats[seat] = true;
-//       }
-
-//       await show.save({ session: dbSession });
-//       // Commit transaction
-//       await dbSession.commitTransaction();
-//       dbSession.endSession();
-
-//       // Populate booking details for response
-//       await newBooking.populate([
-//         { path: "user", select: "name email" },
-//         { path: "show", populate: { path: "movie", select: "Title Poster" } },
-//       ]);
-
-//       //stripe gateway initialize
-//       const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
-
-//       //create line items for stripe
-//       const line_items = [
-//         {
-//           price_data: {
-//             currency: "usd",
-//             product_data: {
-//               name: showId,
-//             },
-//             unit_amount: Math.floor(totalAmount) * 100,
-//           },
-//           quantity: 1,
-//         },
-//       ];
-
-//       const stripeSession = await stripeInstance.checkout.sessions.create({
-//         success_url: `${origin}/mybookings`,
-//         cancel_url: `${origin}/mybookings`,
-
-//         line_items: line_items,
-//         mode: "payment",
-//         metadata: {
-//           bookingId: newBooking._id.toString(),
-//         },
-//         expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
-//         //expires in 30 min
-//       });
-
-//       newBooking.paymentLink = stripeSession.url;
-//       await newBooking.save();
-
-//       try {
-//         await inngest.send({
-//           name: "app/checkpayment",
-//           data: {
-//             bookingId: newBooking._id.toString(),
-//           },
-//         });
-//       } catch (inngestError) {
-//         console.error("Inngest error:", inngestError);
-//         // Don't throw here, just log - booking is already successful
-//       }
-
-//       res.status(201).json({
-//         success: true,
-//         message: "Booking created successfully",
-//         booking: newBooking,
-//         bookingId: newBooking._id,
-//         url: stripeSession.url,
-//       });
-//     } catch (error) {
-//       // Rollback transaction
-//       await dbSession.abortTransaction();
-//     }
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Error creating booking",
-//       error: error.message,
-//     });
-//   }
-// };
-
 // Create new booking with DEBUG LOGS
 const createBooking = async (req, res) => {
   try {
@@ -370,15 +231,41 @@ const createBooking = async (req, res) => {
       await newBooking.save();
 
       // Send Inngest event
+      // try {
+      //   await inngest.send({
+      //     name: "app/checkpayment",
+      //     data: {
+      //       bookingId: newBooking._id.toString(),
+      //     },
+      //   });
+      // } catch (inngestError) {
+      //   console.error("Inngest error:", inngestError);
+      // }
+
+      // Send Inngest event with better logging and error handling
       try {
-        await inngest.send({
+        console.log(
+          "🚀 Triggering Inngest event for booking:",
+          newBooking._id.toString()
+        );
+
+        const inngestResponse = await inngest.send({
           name: "app/checkpayment",
           data: {
             bookingId: newBooking._id.toString(),
           },
         });
+
+        console.log("✅ Inngest event sent successfully:", inngestResponse);
       } catch (inngestError) {
-        console.error("Inngest error:", inngestError);
+        console.error("❌ Inngest error details:", {
+          error: inngestError.message,
+          stack: inngestError.stack,
+          bookingId: newBooking._id.toString(),
+        });
+
+        // Don't throw here - we don't want to fail the booking if Inngest fails
+        // But log it properly for debugging
       }
 
       res.status(201).json({

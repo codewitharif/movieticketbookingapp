@@ -113,45 +113,129 @@ const syncUserDeletion = inngest.createFunction(
 //   }
 // );
 
+// const releaseSeatsAndDeleteBooking = inngest.createFunction(
+//   { id: "release-seats-delete-booking" },
+//   { event: "app/checkpayment" },
+//   async ({ event, step }) => {
+//     try {
+//       const tenMinutesLater = new Date(Date.now() + 10 * 60 * 1000);
+//       await step.sleepUntil("wait-for-10-minutes", tenMinutesLater);
+
+//       await step.run("check-payment-status", async () => {
+//         const bookingId = event.data.bookingId;
+//         const booking = await Booking.findById(bookingId);
+
+//         if (!booking) {
+//           console.log("Booking not found");
+//           return;
+//         }
+
+//         if (!booking.isPaid) {
+//           const show = await Show.findById(booking.show);
+//           if (!show) {
+//             console.log("Show not found");
+//             return;
+//           }
+
+//           // Use for...of instead of forEach for async operations
+//           for (const seat of booking.bookedSeats) {
+//             if (show.occupiedSeats && show.occupiedSeats[seat]) {
+//               delete show.occupiedSeats[seat];
+//             }
+//           }
+
+//           show.markModified("occupiedSeats");
+//           await show.save();
+//           await Booking.findByIdAndDelete(booking._id);
+//           console.log("Seats released and booking deleted.");
+//         }
+//       });
+//     } catch (error) {
+//       console.error("Error in releaseSeatsAndDeleteBooking:", error);
+//       throw error;
+//     }
+//   }
+// );
+
+// test 3
 const releaseSeatsAndDeleteBooking = inngest.createFunction(
   { id: "release-seats-delete-booking" },
   { event: "app/checkpayment" },
   async ({ event, step }) => {
     try {
+      // Wait for 10 minutes (you mentioned 100 minutes in comment, adjust as needed)
       const tenMinutesLater = new Date(Date.now() + 10 * 60 * 1000);
       await step.sleepUntil("wait-for-10-minutes", tenMinutesLater);
 
       await step.run("check-payment-status", async () => {
         const bookingId = event.data.bookingId;
+        console.log(`🔍 Checking payment status for booking: ${bookingId}`);
+
         const booking = await Booking.findById(bookingId);
 
         if (!booking) {
-          console.log("Booking not found");
-          return;
+          console.log("❌ Booking not found:", bookingId);
+          return { success: false, reason: "Booking not found" };
         }
 
+        console.log(`📊 Booking found. Payment status: ${booking.isPaid}`);
+
+        // Only proceed if payment is NOT made
         if (!booking.isPaid) {
+          console.log("💰 Payment not made, proceeding to release seats");
+
           const show = await Show.findById(booking.show);
           if (!show) {
-            console.log("Show not found");
-            return;
+            console.log("❌ Show not found:", booking.show);
+            return { success: false, reason: "Show not found" };
           }
 
-          // Use for...of instead of forEach for async operations
+          console.log(`🎭 Show found: ${show._id}`);
+          console.log(`💺 Seats to release: ${booking.bookedSeats.join(", ")}`);
+          console.log(`🔒 Current occupied seats:`, show.occupiedSeats);
+
+          // Initialize occupiedSeats if it doesn't exist
+          if (!show.occupiedSeats) {
+            show.occupiedSeats = {};
+          }
+
+          // Release seats
+          let seatsReleased = 0;
           for (const seat of booking.bookedSeats) {
-            if (show.occupiedSeats && show.occupiedSeats[seat]) {
+            if (show.occupiedSeats[seat]) {
               delete show.occupiedSeats[seat];
+              seatsReleased++;
+              console.log(`✅ Released seat: ${seat}`);
+            } else {
+              console.log(`⚠️ Seat ${seat} was not found in occupied seats`);
             }
           }
 
+          // Save the show with released seats
           show.markModified("occupiedSeats");
           await show.save();
+          console.log(`📝 Show updated with ${seatsReleased} seats released`);
+
+          // Delete the booking
           await Booking.findByIdAndDelete(booking._id);
-          console.log("Seats released and booking deleted.");
+          console.log(`🗑️ Booking deleted: ${booking._id}`);
+
+          return {
+            success: true,
+            seatsReleased,
+            bookingDeleted: true,
+          };
+        } else {
+          console.log("✅ Payment already made, keeping booking");
+          return {
+            success: true,
+            reason: "Payment already completed",
+          };
         }
       });
     } catch (error) {
-      console.error("Error in releaseSeatsAndDeleteBooking:", error);
+      console.error("❌ Error in releaseSeatsAndDeleteBooking:", error);
+      // Re-throw to let Inngest handle the retry logic
       throw error;
     }
   }
@@ -249,24 +333,6 @@ const sendBookingConfirmationEmail = inngest.createFunction(
     });
   }
 );
-
-// const sendNewShowNotifications = inngest.createFunction(
-//     { id: "send-new-show-notifications" },
-//   { event: "app/show.added" },
-
-//   async ({event})=>{
-//     const {movieTitle} = event.data;
-
-//     const users = await User.find({})
-//     for(const user of users){
-//       const userEmail = user.email;
-//       const userName = user.name;
-
-//       const subject = `New Show Added ${movieTitle}`;
-//       const body = ``
-//     }
-//   }
-// )
 
 // Export functions
 

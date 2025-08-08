@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { LayoutDashboard, Film, Ticket, PlusCircle,PlusSquare } from "lucide-react";
+import {
+  LayoutDashboard,
+  Film,
+  Ticket,
+  PlusCircle,
+  PlusSquare,
+} from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Ticket as TicketIcon } from "lucide-react";
 
@@ -40,7 +46,7 @@ const AdminDashboard = () => {
             </div>
           ) : (
             <h1 className="text-xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              CinemaVibe
+              IndieShows
             </h1>
           )}
         </div>
@@ -75,8 +81,6 @@ const AdminDashboard = () => {
         <div className="flex-1 h-full p-4 lg:p-6">
           <Outlet />
         </div>
-
-        
       </main>
     </div>
   );

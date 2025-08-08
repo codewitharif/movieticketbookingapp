@@ -5,6 +5,7 @@ import useMovieStore from "../store/useMovieStore";
 export default function MyBookings() {
   const navigate = useNavigate();
   const { bookings } = useMovieStore();
+  console.log(bookings)
 
   return (
     <div className="min-h-screen bg-slate-800 pb-12">
