@@ -111,7 +111,9 @@ export default function SeatSelection({
       });
 
       if (response.data.success) {
-        toast.success("Booking created successfully!");
+        toast.warning(
+          "Complete payment within 10 minutes or booking will be cancelled!"
+        );
 
         // Refresh occupied seats
         await fetchOccupiedSeats(selectedShow._id);
