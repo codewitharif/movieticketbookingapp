@@ -149,46 +149,46 @@ const useMovieStore = create((set, get) => ({
     }
   },
   // Fetch single movie by ID
-fetchMovieById: async (movieId) => {
-  try {
-    set({ loading: true, error: null });
-    const { data } = await axios.get(`/api/movies/${movieId}`);
+  fetchMovieById: async (movieId) => {
+    try {
+      set({ loading: true, error: null });
+      const { data } = await axios.get(`/api/movies/${movieId}`);
 
-    if (data.success) {
-      set({ loading: false });
-      return { success: true, movie: data.movie };
-    } else {
-      set({ error: data.message, loading: false });
-      return { success: false, message: data.message };
+      if (data.success) {
+        set({ loading: false });
+        return { success: true, movie: data.movie };
+      } else {
+        set({ error: data.message, loading: false });
+        return { success: false, message: data.message };
+      }
+    } catch (error) {
+      console.log("Error fetching movie:", error);
+      set({ error: "Failed to fetch movie", loading: false });
+      return { success: false, message: "Failed to fetch movie" };
     }
-  } catch (error) {
-    console.log("Error fetching movie:", error);
-    set({ error: "Failed to fetch movie", loading: false });
-    return { success: false, message: "Failed to fetch movie" };
-  }
-},
+  },
 
-// In your useMovieStore
-// fetchMovieById: async (movieId) => {
-//   try {
-//     set({ loading: true, error: null });
-//     const { data } = await axios.get(`/api/movies/${movieId}`);
+  // In your useMovieStore
+  // fetchMovieById: async (movieId) => {
+  //   try {
+  //     set({ loading: true, error: null });
+  //     const { data } = await axios.get(`/api/movies/${movieId}`);
 
-//     if (data.success) {
-//       set({ loading: false });
-//       return { success: true, movie: data.movie };
-//     } else {
-//       set({ error: data.message, loading: false });
-//       return { success: false, message: data.message };
-//     }
-//   } catch (error) {
-//     console.log("Error fetching movie:", error);
-//     set({ error: "Failed to fetch movie", loading: false });
-//     return { success: false, message: "Failed to fetch movie" };
-//   }
-// },
+  //     if (data.success) {
+  //       set({ loading: false });
+  //       return { success: true, movie: data.movie };
+  //     } else {
+  //       set({ error: data.message, loading: false });
+  //       return { success: false, message: data.message };
+  //     }
+  //   } catch (error) {
+  //     console.log("Error fetching movie:", error);
+  //     set({ error: "Failed to fetch movie", loading: false });
+  //     return { success: false, message: "Failed to fetch movie" };
+  //   }
+  // },
 
-// setSelectedMovie: (movie) => set({ selectedMovie: movie }),
+  // setSelectedMovie: (movie) => set({ selectedMovie: movie }),
 
   fetchShows: async () => {
     try {
