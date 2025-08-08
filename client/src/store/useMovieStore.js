@@ -17,8 +17,7 @@ export const featuredMovies = [
     description:
       "Pushpa returns stronger and more ruthless as he faces off against Bhanwar Singh in a high-stakes battle for supremacy.",
     price: 18,
-    booking_link:
-      "https://movieticketbookingapp.vercel.app/booking/688dd7959811fd57f2d7aeb5",
+    booking_link: "/booking/688dd7959811fd57f2d7aeb5",
     trailer_link: "https://youtu.be/1kVK0MZlbI4",
   },
   {
@@ -32,8 +31,7 @@ export const featuredMovies = [
     description:
       "Shivudu, a daring young man, discovers his royal lineage and begins a journey to rescue a queen and reclaim a lost kingdom.",
     price: 12,
-    booking_link:
-      "https://movieticketbookingapp.vercel.app/booking/6884d328ba044c7e6635fa0f",
+    booking_link: "/booking/6884d328ba044c7e6635fa0f",
     trailer_link: "https://youtu.be/VdafjyFK3ko",
   },
 
@@ -48,8 +46,7 @@ export const featuredMovies = [
     description:
       "Chanderi is haunted once again as Stree returns. The gang reunites to uncover the mystery behind her reappearance.",
     price: 13,
-    booking_link:
-      "https://movieticketbookingapp.vercel.app/booking/688dd8c69811fd57f2d7aeb7",
+    booking_link: "/booking/688dd8c69811fd57f2d7aeb7",
     trailer_link: "https://youtu.be/VlvOgk5BHS4",
   },
   {
@@ -64,8 +61,7 @@ export const featuredMovies = [
       "A man driven by a personal vendetta sets out to correct the wrongs in society, taking on a corrupt system with a daring plan.",
     price: 17,
 
-    booking_link:
-      "https://movieticketbookingapp.vercel.app/booking/688dd8c69811fd57f2d7aeb7",
+    booking_link: "/booking/688dd8c69811fd57f2d7aeb7",
     trailer_link: "https://youtu.be/k8YiqM0Y-78",
   },
   {
@@ -79,8 +75,7 @@ export const featuredMovies = [
     description:
       "A suspended basketball coach is ordered to train a team of players with disabilities, leading to an emotional journey of growth, inclusion, and triumph.",
     price: 20,
-    booking_link:
-      "https://movieticketbookingapp.vercel.app/booking/687e59a185de1426df651c06",
+    booking_link: "/booking/687e59a185de1426df651c06",
     trailer_link: "https://youtu.be/YH6k5weqwy8",
   },
 ];

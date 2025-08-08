@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Star, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSlider({ featuredMovies }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showTrailerModal, setShowTrailerModal] = useState(false);
   const [selectedMovieForTrailer, setSelectedMovieForTrailer] = useState(null);
+  const navigate = useNavigate();
 
   const currentMovie = featuredMovies?.[currentSlide] || {};
 
@@ -24,9 +26,17 @@ export default function HeroSlider({ featuredMovies }) {
     }
   };
 
+  // const handleBookingClick = () => {
+  //   if (currentMovie?.booking_link) {
+  //     const url = new URL(currentMovie.booking_link);
+
+  //     navigate(url.pathname); // This navigates within the app, e.g., /booking/:id
+  //   }
+  // };
+
   const handleBookingClick = () => {
     if (currentMovie?.booking_link) {
-      window.open(currentMovie.booking_link, "_blank");
+      navigate(currentMovie.booking_link); // No need to parse
     }
   };
 
@@ -96,9 +106,7 @@ export default function HeroSlider({ featuredMovies }) {
   ];
 
   const movies =
-    featuredMovies && featuredMovies.length > 0
-      ? featuredMovies
-      : sampleMovies;
+    featuredMovies && featuredMovies.length > 0 ? featuredMovies : sampleMovies;
 
   return (
     <>
@@ -121,7 +129,9 @@ export default function HeroSlider({ featuredMovies }) {
                 <h2 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
                   {movie.title}
                 </h2>
-                <p className="text-xl text-slate-300 mb-4">{movie.description}</p>
+                <p className="text-xl text-slate-300 mb-4">
+                  {movie.description}
+                </p>
                 <div className="flex items-center space-x-6 mb-8">
                   <div className="flex items-center space-x-2">
                     <Star className="w-5 h-5 text-yellow-400" />
@@ -163,9 +173,7 @@ export default function HeroSlider({ featuredMovies }) {
           <ChevronLeft className="w-6 h-6" />
         </button>
         <button
-          onClick={() =>
-            setCurrentSlide((prev) => (prev + 1) % movies.length)
-          }
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % movies.length)}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-colors"
         >
           <ChevronRight className="w-6 h-6" />
