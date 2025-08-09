@@ -148,7 +148,7 @@ export default function BookingPage() {
       );
 
       if (data.success) {
-        toast.success("Favorite toggled");
+        toast.success("Favorite updated!");
         fetchFavoriteMovies();
       }
     } catch (err) {
