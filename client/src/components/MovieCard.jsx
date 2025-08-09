@@ -14,7 +14,6 @@ export default function MovieCard({ movie, shows }) {
   const bookShow = () => {
     handleSelectedMovie(movie);
     navigate(`/booking/${movie._id}`);
-    
   };
 
   const uniqueDates = [
@@ -34,23 +33,6 @@ export default function MovieCard({ movie, shows }) {
             draggable={false}
             className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
           />
-
-          {/* Favorite Heart Icon */}
-          {/* <div className="absolute top-2 right-2">
-            <button
-              onClick={async () => toggleFavorite(movie)}
-              className="backdrop-blur-sm rounded-full p-1 transition-colors 
-                  bg-black/50 hover:bg-red-500/80"
-            >
-              <Heart
-                className={`w-4 h-4 transition-transform duration-200 ${
-                  fetchFavoriteMovies.find(movie => movie._id===id)
-                    ? "fill-red-500 text-red-500 scale-110"
-                    : "text-white"
-                }`}
-              />
-            </button>
-          </div> */}
 
           {/* Rating */}
           <div className="absolute top-2 left-2">
@@ -73,7 +55,7 @@ export default function MovieCard({ movie, shows }) {
             {movie.Runtime}
           </p>
 
-          <div className="mb-3">
+          <div className="mb-4">
             <p className="text-slate-400 text-xs mb-2 flex items-center">
               <Calendar className="w-3 h-3 mr-1" />
               {shows.length} shows available
@@ -92,16 +74,16 @@ export default function MovieCard({ movie, shows }) {
             </p>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-xl font-bold text-emerald-400">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-baseline min-w-0">
+              <span className="text-lg font-bold text-emerald-400">
                 ₹{minPrice}
               </span>
-              <span className="text-slate-400 text-xs ml-1">/ ticket</span>
+              <span className="text-slate-400 text-xs ml-1">/ticket</span>
             </div>
             <button
               onClick={bookShow}
-              className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-4 py-1.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 flex-shrink-0"
             >
               View Shows
             </button>

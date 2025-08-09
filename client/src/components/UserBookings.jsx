@@ -143,7 +143,7 @@ const UserBookings = () => {
             <p className="text-slate-400">You haven't made any bookings yet.</p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {bookings?.map((booking) => (
               <div
                 key={booking._id}
@@ -154,14 +154,14 @@ const UserBookings = () => {
                 }}
               >
                 {/* Movie Poster */}
-                <div className="relative h-48">
+                <div className="relative">
                   <img
                     src={
                       booking.show?.movie?.Poster || "/placeholder-movie.jpg"
                     }
                     alt={booking.show?.movie?.Title}
                     draggable={false}
-                    className="w-full h-full object-cover"
+                    className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute top-2 right-2">
                     <div

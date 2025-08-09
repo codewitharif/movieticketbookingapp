@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 
 const Favourites = () => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
-  // const [loading, setLoading] = false;
   const { getToken } = useAuth();
   const {
     loading,
@@ -66,7 +65,7 @@ const Favourites = () => {
         }
       });
 
-      toast.success("Removed from faviourites");
+      toast.success("Removed from favourites");
     } catch (err) {
       console.error("Error toggling favorite:", err.message);
     }
@@ -82,34 +81,32 @@ const Favourites = () => {
             View and manage your favourites
           </p>
         </div>
-      </div>
 
-      {loading ? (
-        <div className="min-h-screen flex justify-center">
-          <div className="flex justify-center text-white">
-            <Loader className="w-6 h-6 animate-spin mr-2" />
-            Loading Favourite Movies...
+        {loading ? (
+          <div className="flex justify-center">
+            <div className="flex justify-center text-white">
+              <Loader className="w-6 h-6 animate-spin mr-2" />
+              Loading Favourite Movies...
+            </div>
           </div>
-        </div>
-      ) : favoriteMovies.length === 0 ? (
-        <div className="text-center py-16">
-          <Heart className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-          <h3 className="text-2xl font-semibold text-white mb-2">
-            No favorites found
-          </h3>
-          <p className="text-slate-400">You haven't made any favorites yet.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {favoriteMovies.map((movie) => {
-            const isFav = favoriteMovies.some((m) => m._id === movie._id);
+        ) : favoriteMovies.length === 0 ? (
+          <div className="text-center py-16">
+            <Heart className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+            <h3 className="text-2xl font-semibold text-white mb-2">
+              No favorites found
+            </h3>
+            <p className="text-slate-400">You haven't made any favorites yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {favoriteMovies.map((movie) => {
+              const isFav = favoriteMovies.some((m) => m._id === movie._id);
 
-            return (
-              <div
-                key={movie._id}
-                className="group cursor-pointer max-w-sm mx-auto"
-              >
-                <div className="bg-slate-800/50 backdrop-blur-md rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+              return (
+                <div
+                  key={movie._id}
+                  className="bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-all duration-300 overflow-hidden cursor-pointer"
+                >
                   <div className="relative">
                     <img
                       src={movie.Poster}
@@ -160,11 +157,11 @@ const Favourites = () => {
                     </p>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

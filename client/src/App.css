@@ -1,0 +1,24 @@
+/* Navigation arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #10b981; /* arrow icon color */
+  /* background: linear-gradient(to right, #10b981, #06b6d4); emerald to cyan */
+  padding: 10px;
+  border-radius: 9999px; /* fully rounded */
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 18px; /* arrow size */
+}
+
+/* Pagination dots */
+.swiper-pagination-bullet {
+  background: #10b981 !important; /* emerald color */
+  opacity: 0.6;
+}
+
+.swiper-pagination-bullet-active {
+  background: linear-gradient(to right, #10b981, #06b6d4) !important;
+  opacity: 1;
+}

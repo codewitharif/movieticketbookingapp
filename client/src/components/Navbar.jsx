@@ -54,9 +54,9 @@ export default function Navbar({ setShowBooking }) {
               <Play className="w-6 h-6 text-white" />
             </div>
             <Link to={"/"}>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              IndieShows
-            </h1>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                IndieShows
+              </h1>
             </Link>
           </div>
 
@@ -74,18 +74,13 @@ export default function Navbar({ setShowBooking }) {
             >
               Movies
             </a>
-            <a
-              href="#"
+
+            <Link
+              to="/mybookings"
               className="text-slate-300 hover:text-white transition-colors font-medium"
             >
-              Theaters
-            </a>
-            <a
-              href="#"
-              className="text-slate-300 hover:text-white transition-colors font-medium"
-            >
-              Releases
-            </a>
+              Bookings
+            </Link>
             <Link
               to="/favourites"
               className="text-slate-300 hover:text-white transition-colors font-medium"
@@ -157,18 +152,13 @@ export default function Navbar({ setShowBooking }) {
               >
                 Movies
               </a>
-              <a
-                href="#"
+
+              <Link
+                to="/mybookings"
                 className="text-slate-300 hover:text-white transition-colors font-medium"
               >
-                Theaters
-              </a>
-              <a
-                href="#"
-                className="text-slate-300 hover:text-white transition-colors font-medium"
-              >
-                Releases
-              </a>
+                Bookings
+              </Link>
               <Link
                 to="/favourites"
                 className="text-slate-300 hover:text-white transition-colors font-medium"
