@@ -23,11 +23,11 @@ import "react-toastify/dist/ReactToastify.css";
 import RequireAdmin from "./pages/RequireAdmin";
 import AddShow from "./components/AddShow";
 import ListShow from "./components/ListShow";
-import NotFound404 from "./pages/NotFound";
 import Favourites from "./components/Favourites";
 import UserBookings from "./components/UserBookings";
 import Loading from "./components/Loading";
 import ProtectedUserRoute from "./components/ProtectUserRotes";
+import Error404 from "./components/Error";
 
 export default function App() {
   return (
@@ -56,7 +56,6 @@ export default function App() {
             </>
           }
         />
- 
 
         <Route
           path="/admin/sign-in"
@@ -114,7 +113,7 @@ export default function App() {
           }
         />
 
-        <Route path="*" element={<NotFound404 />} />
+        <Route path="*" element={<Error404 />} />
 
         {/* Admin Routes */}
         <Route
