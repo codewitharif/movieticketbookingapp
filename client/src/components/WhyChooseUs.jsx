@@ -5,7 +5,7 @@ export default function WhyChooseUs() {
     <section className="py-16 bg-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="text-center mb-12">
-          <h3 className="text-4xl font-bold text-white mb-4">Why Choose CinemaVibe?</h3>
+          <h3 className="text-4xl font-bold text-white mb-4">Why Choose IndieShows?</h3>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             Experience cinema like never before with our premium facilities and services
           </p>

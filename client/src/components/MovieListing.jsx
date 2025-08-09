@@ -21,7 +21,7 @@ export default function MovieListing({ onBookNow }) {
           <h3 className="text-4xl font-bold text-white mb-4">Now Showing</h3>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             Discover the latest blockbusters and indie favorites playing at
-            CinemaVibe
+            IndieShows
           </p>
         </div>
 
