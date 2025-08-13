@@ -11,6 +11,7 @@ import {
   Loader,
 } from "lucide-react";
 import { useUser } from "@clerk/clerk-react";
+import useMovieStore from "../store/useMovieStore"; // Import your Zustand store
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 
@@ -20,6 +21,10 @@ const UserBookings = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { id } = useParams();
+
+  // Get theme from Zustand store
+  const { theme } = useMovieStore();
+  const isDark = theme === "dark";
 
   // Mock user ID - replace with actual user ID from auth
   const { isLoaded, user: clerkUser } = useUser();
@@ -111,43 +116,69 @@ const UserBookings = () => {
 
   if (!isLoaded || !clerkUser) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
+      <div className={`min-h-screen flex items-center justify-center ${
+        isDark ? "text-white" : "text-slate-900"
+      }`}>
         Please sign in to view your bookings.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 py-8">
+    <div className={`min-h-screen py-8 ${
+      isDark 
+        ? "bg-gradient-to-b from-slate-900 to-slate-800" 
+        : "bg-gradient-to-b from-slate-50 to-slate-100"
+    }`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">My Bookings</h1>
-          <p className="text-xl text-slate-400">
+          <h1 className={`text-4xl font-bold mb-4 ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}>
+            My Bookings
+          </h1>
+          <p className={`text-xl ${
+            isDark ? "text-slate-400" : "text-slate-600"
+          }`}>
             View and manage your movie bookings
           </p>
         </div>
         {loading ? (
           <div className="min-h-screen flex justify-center">
-            <div className="flex justify-center text-white">
+            <div className={`flex justify-center ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
               <Loader className="w-6 h-6 animate-spin mr-2" />
               Loading Bookings...
             </div>
           </div>
         ) : bookings?.length === 0 ? (
           <div className="text-center py-16">
-            <Ticket className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-semibold text-white mb-2">
+            <Ticket className={`w-16 h-16 mx-auto mb-4 ${
+              isDark ? "text-slate-600" : "text-slate-300"
+            }`} />
+            <h3 className={`text-2xl font-semibold mb-2 ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
               No bookings found
             </h3>
-            <p className="text-slate-400">You haven't made any bookings yet.</p>
+            <p className={`${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}>
+              You haven't made any bookings yet.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {bookings?.map((booking) => (
               <div
                 key={booking._id}
-                className="bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-all duration-300 overflow-hidden cursor-pointer"
+                className={`backdrop-blur-md rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
+                  isDark 
+                    ? "bg-slate-800/50 border-slate-700 hover:border-emerald-500/50" 
+                    : "bg-white/80 border-slate-200 hover:border-emerald-400/50 shadow-lg hover:shadow-xl"
+                }`}
                 onClick={() => {
                   setSelectedBooking(booking);
                   setShowModal(true);
@@ -190,11 +221,15 @@ const UserBookings = () => {
 
                 {/* Booking Details */}
                 <div className="p-4">
-                  <h3 className="text-lg font-semibold text-white mb-2 truncate">
+                  <h3 className={`text-lg font-semibold mb-2 truncate ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}>
                     {booking.show?.movie?.Title}
                   </h3>
 
-                  <div className="space-y-2 text-sm text-slate-300">
+                  <div className={`space-y-2 text-sm ${
+                    isDark ? "text-slate-300" : "text-slate-600"
+                  }`}>
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-2 text-emerald-400" />
                       {formatDate(booking.show?.showDate)}
@@ -217,8 +252,12 @@ const UserBookings = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-700">
-                    <div className="text-xs text-slate-400">
+                  <div className={`mt-4 pt-3 border-t ${
+                    isDark ? "border-slate-700" : "border-slate-200"
+                  }`}>
+                    <div className={`text-xs ${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}>
                       Booked on: {formatDate(booking.createdAt)}
                     </div>
                   </div>
@@ -231,15 +270,25 @@ const UserBookings = () => {
         {/* Booking Detail Modal */}
         {showModal && selectedBooking && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-slate-800 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className={`rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto ${
+              isDark ? "bg-slate-800" : "bg-white"
+            }`}>
               {/* Modal Header */}
-              <div className="flex items-center justify-between p-6 border-b border-slate-700">
-                <h2 className="text-2xl font-bold text-white">
+              <div className={`flex items-center justify-between p-6 border-b ${
+                isDark ? "border-slate-700" : "border-slate-200"
+              }`}>
+                <h2 className={`text-2xl font-bold ${
+                  isDark ? "text-white" : "text-slate-900"
+                }`}>
                   Booking Details
                 </h2>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-500 hover:text-slate-700"
+                  }`}
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -259,13 +308,19 @@ const UserBookings = () => {
                       draggable={false}
                       className="w-full h-64 object-cover rounded-lg mb-4"
                     />
-                    <h3 className="text-xl font-bold text-white mb-2">
+                    <h3 className={`text-xl font-bold mb-2 ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}>
                       {selectedBooking.show?.movie?.Title}
                     </h3>
-                    <p className="text-slate-400 text-sm mb-2">
+                    <p className={`text-sm mb-2 ${
+                      isDark ? "text-slate-400" : "text-slate-600"
+                    }`}>
                       {selectedBooking.show?.movie?.Genre}
                     </p>
-                    <p className="text-slate-400 text-sm">
+                    <p className={`text-sm ${
+                      isDark ? "text-slate-400" : "text-slate-600"
+                    }`}>
                       {selectedBooking.show?.movie?.Runtime}
                     </p>
                   </div>
@@ -273,19 +328,27 @@ const UserBookings = () => {
                   {/* Booking Info */}
                   <div className="space-y-4">
                     <div>
-                      <h4 className="text-white font-semibold mb-3">
+                      <h4 className={`font-semibold mb-3 ${
+                        isDark ? "text-white" : "text-slate-900"
+                      }`}>
                         Show Details
                       </h4>
                       <div className="space-y-3">
-                        <div className="flex items-center text-slate-300">
+                        <div className={`flex items-center ${
+                          isDark ? "text-slate-300" : "text-slate-600"
+                        }`}>
                           <Calendar className="w-4 h-4 mr-3 text-emerald-400" />
                           {formatDate(selectedBooking.show?.showDate)}
                         </div>
-                        <div className="flex items-center text-slate-300">
+                        <div className={`flex items-center ${
+                          isDark ? "text-slate-300" : "text-slate-600"
+                        }`}>
                           <Clock className="w-4 h-4 mr-3 text-emerald-400" />
                           {formatTime(selectedBooking.show?.showTime)}
                         </div>
-                        <div className="flex items-center text-slate-300">
+                        <div className={`flex items-center ${
+                          isDark ? "text-slate-300" : "text-slate-600"
+                        }`}>
                           <Users className="w-4 h-4 mr-3 text-emerald-400" />
                           {selectedBooking.bookedSeats?.length} seats
                         </div>
@@ -293,7 +356,11 @@ const UserBookings = () => {
                     </div>
 
                     <div>
-                      <h4 className="text-white font-semibold mb-3">Seats</h4>
+                      <h4 className={`font-semibold mb-3 ${
+                        isDark ? "text-white" : "text-slate-900"
+                      }`}>
+                        Seats
+                      </h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedBooking.bookedSeats?.map((seat) => (
                           <span
@@ -307,15 +374,23 @@ const UserBookings = () => {
                     </div>
 
                     <div>
-                      <h4 className="text-white font-semibold mb-3">Payment</h4>
+                      <h4 className={`font-semibold mb-3 ${
+                        isDark ? "text-white" : "text-slate-900"
+                      }`}>
+                        Payment
+                      </h4>
                       <div className="space-y-2">
-                        <div className="flex justify-between text-slate-300">
+                        <div className={`flex justify-between ${
+                          isDark ? "text-slate-300" : "text-slate-600"
+                        }`}>
                           <span>Total Amount:</span>
                           <span className="font-semibold">
                             ₹{selectedBooking.amount}
                           </span>
                         </div>
-                        <div className="flex justify-between text-slate-300">
+                        <div className={`flex justify-between ${
+                          isDark ? "text-slate-300" : "text-slate-600"
+                        }`}>
                           <span>Status:</span>
                           <span
                             className={getStatusColor(selectedBooking.isPaid)}
@@ -323,7 +398,9 @@ const UserBookings = () => {
                             {getStatusText(selectedBooking.isPaid)}
                           </span>
                         </div>
-                        <div className="flex justify-between text-slate-300">
+                        <div className={`flex justify-between ${
+                          isDark ? "text-slate-300" : "text-slate-600"
+                        }`}>
                           <span>Booking Date:</span>
                           <span>{formatDate(selectedBooking.createdAt)}</span>
                         </div>

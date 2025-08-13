@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Play, Menu, X, Ticket, Heart } from "lucide-react";
+import { Play, Menu, X, Ticket, Heart, Sun, Moon } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   SignedIn,
@@ -8,11 +8,16 @@ import {
   useClerk,
   useUser,
 } from "@clerk/clerk-react";
+import useMovieStore from "../store/useMovieStore"; // Import your Zustand store
 
 export default function Navbar({ setShowBooking }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Get theme from Zustand store
+  const { theme, toggleTheme } = useMovieStore();
+  const isDark = theme === "dark";
 
   const { openSignIn } = useClerk();
   const { user } = useUser();
@@ -20,7 +25,11 @@ export default function Navbar({ setShowBooking }) {
   // If we're on the booking route, show the booking header
   if (location.pathname === "/booking" || location.pathname === "/mybooking") {
     return (
-      <header className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+      <header className={`${
+        isDark 
+          ? "bg-slate-900/90 border-slate-800" 
+          : "bg-white/90 border-slate-200"
+      } backdrop-blur-md border-b sticky top-0 z-50`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-3">
@@ -33,9 +42,26 @@ export default function Navbar({ setShowBooking }) {
             </div>
             <button
               onClick={() => navigate("/")}
-              className="bg-slate-800 hover:bg-slate-700 text-white px-6 py-2 rounded-lg transition-colors"
+              className={`${
+                isDark 
+                  ? "bg-slate-800 hover:bg-slate-700 text-white" 
+                  : "bg-slate-100 hover:bg-slate-200 text-slate-900"
+              } px-6 py-2 rounded-lg transition-colors`}
             >
               ← Back to Movies
+            </button>
+            
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className={`${
+                isDark 
+                  ? "bg-slate-800 hover:bg-slate-700 text-white" 
+                  : "bg-slate-100 hover:bg-slate-200 text-slate-900"
+              } p-2 rounded-lg transition-colors`}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -45,7 +71,11 @@ export default function Navbar({ setShowBooking }) {
 
   // Default navbar for all other routes
   return (
-    <header className="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+    <header className={`${
+      isDark 
+        ? "bg-slate-900/95 border-slate-800" 
+        : "bg-white/95 border-slate-200"
+    } backdrop-blur-md border-b sticky top-0 z-50`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
@@ -64,26 +94,34 @@ export default function Navbar({ setShowBooking }) {
           <nav className="hidden lg:flex space-x-8">
             <Link
               to="/"
-              className="text-white hover:text-emerald-400 transition-colors font-medium"
+              className={`${
+                isDark ? "text-white" : "text-slate-900"
+              } hover:text-emerald-400 transition-colors font-medium`}
             >
               Home
             </Link>
             <a
               href="#"
-              className="text-slate-300 hover:text-white transition-colors font-medium"
+              className={`${
+                isDark ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
+              } transition-colors font-medium`}
             >
               Movies
             </a>
 
             <Link
               to="/mybookings"
-              className="text-slate-300 hover:text-white transition-colors font-medium"
+              className={`${
+                isDark ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
+              } transition-colors font-medium`}
             >
               Bookings
             </Link>
             <Link
               to="/favourites"
-              className="text-slate-300 hover:text-white transition-colors font-medium"
+              className={`${
+                isDark ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
+              } transition-colors font-medium`}
             >
               Favourites
             </Link>
@@ -91,6 +129,19 @@ export default function Navbar({ setShowBooking }) {
 
           {/* Right side (Auth/User + Mobile Menu) */}
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle Button - Always visible */}
+            <button
+              onClick={toggleTheme}
+              className={`${
+                isDark 
+                  ? "bg-slate-800 hover:bg-slate-700 text-white" 
+                  : "bg-slate-100 hover:bg-slate-200 text-slate-900"
+              } p-2 rounded-lg transition-colors`}
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
+
             {user ? (
               <div className="flex items-center gap-3">
                 <UserButton>
@@ -122,7 +173,9 @@ export default function Navbar({ setShowBooking }) {
 
                 {/* Hamburger icon only for small screens */}
                 <button
-                  className="lg:hidden text-white ml-2"
+                  className={`lg:hidden ml-2 ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   {isMenuOpen ? (
@@ -138,30 +191,40 @@ export default function Navbar({ setShowBooking }) {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-slate-800">
+          <div className={`lg:hidden py-4 border-t ${
+            isDark ? "border-slate-800" : "border-slate-200"
+          }`}>
             <nav className="flex flex-col space-y-3">
               <a
                 href="#"
-                className="text-white hover:text-emerald-400 transition-colors font-medium"
+                className={`${
+                  isDark ? "text-white" : "text-slate-900"
+                } hover:text-emerald-400 transition-colors font-medium`}
               >
                 Home
               </a>
               <a
                 href="#"
-                className="text-slate-300 hover:text-white transition-colors font-medium"
+                className={`${
+                  isDark ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
+                } transition-colors font-medium`}
               >
                 Movies
               </a>
 
               <Link
                 to="/mybookings"
-                className="text-slate-300 hover:text-white transition-colors font-medium"
+                className={`${
+                  isDark ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
+                } transition-colors font-medium`}
               >
                 Bookings
               </Link>
               <Link
                 to="/favourites"
-                className="text-slate-300 hover:text-white transition-colors font-medium"
+                className={`${
+                  isDark ? "text-slate-300 hover:text-white" : "text-slate-600 hover:text-slate-900"
+                } transition-colors font-medium`}
               >
                 Favourites
               </Link>

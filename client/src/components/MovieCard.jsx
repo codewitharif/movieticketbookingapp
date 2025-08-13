@@ -7,8 +7,12 @@ import { toast } from "react-toastify";
 
 export default function MovieCard({ movie, shows }) {
   const navigate = useNavigate();
-  const { handleSelectedMovie } = useMovieStore();
+  const {theme, handleSelectedMovie } = useMovieStore();
   const { getToken } = useAuth();
+  
+  // Get theme from Zustand store
+  const isDark = theme === "dark";
+  
   // const isFav = isFavorite(movie._id);
 
   const bookShow = () => {
@@ -25,7 +29,11 @@ export default function MovieCard({ movie, shows }) {
 
   return (
     <div className="group cursor-pointer max-w-sm mx-auto">
-      <div className="bg-slate-800/50 backdrop-blur-md rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+      <div className={`backdrop-blur-md rounded-xl overflow-hidden border transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl ${
+        isDark 
+          ? "bg-slate-800/50 border-slate-700 hover:border-emerald-500/50" 
+          : "bg-white/90 border-slate-200 hover:border-emerald-400/50 shadow-lg"
+      }`}>
         <div className="relative">
           <img
             src={movie.Poster}
@@ -46,23 +54,37 @@ export default function MovieCard({ movie, shows }) {
         </div>
 
         <div className="p-4">
-          <h4 className="text-lg font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors">
+          <h4 className={`text-lg font-semibold mb-1 group-hover:text-emerald-400 transition-colors ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}>
             {movie.Title}
           </h4>
-          <p className="text-slate-400 text-xs mb-2">{movie.Genre}</p>
-          <p className="text-slate-400 text-xs mb-2 flex items-center">
+          <p className={`text-xs mb-2 ${
+            isDark ? "text-slate-400" : "text-slate-600"
+          }`}>
+            {movie.Genre}
+          </p>
+          <p className={`text-xs mb-2 flex items-center ${
+            isDark ? "text-slate-400" : "text-slate-600"
+          }`}>
             <Clock className="w-3 h-3 mr-1" />
             {movie.Runtime}
           </p>
 
           <div className="mb-4">
-            <p className="text-slate-400 text-xs mb-2 flex items-center">
+            <p className={`text-xs mb-2 flex items-center ${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}>
               <Calendar className="w-3 h-3 mr-1" />
               {shows.length} shows available
             </p>
-            <p className="text-slate-400 text-xs">
+            <p className={`text-xs ${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}>
               Dates:{" "}
-              <span className="text-white">
+              <span className={`${
+                isDark ? "text-white" : "text-slate-900"
+              }`}>
                 {uniqueDates.slice(0, 2).join(", ")}
               </span>
               {uniqueDates.length > 2 && (
@@ -79,7 +101,11 @@ export default function MovieCard({ movie, shows }) {
               <span className="text-lg font-bold text-emerald-400">
                 ₹{minPrice}
               </span>
-              <span className="text-slate-400 text-xs ml-1">/ticket</span>
+              <span className={`text-xs ml-1 ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}>
+                /ticket
+              </span>
             </div>
             <button
               onClick={bookShow}

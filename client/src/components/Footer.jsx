@@ -8,10 +8,19 @@ import {
   Instagram,
   Youtube,
 } from "lucide-react";
+import useMovieStore from "../store/useMovieStore"; // Import your Zustand store
 
 export default function Footer() {
+  // Get theme from Zustand store
+  const { theme } = useMovieStore();
+  const isDark = theme === "dark";
+
   return (
-    <footer className="bg-slate-900 border-t border-slate-800">
+    <footer className={`border-t ${
+      isDark 
+        ? "bg-slate-900 border-slate-800" 
+        : "bg-white border-slate-200"
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
@@ -23,32 +32,42 @@ export default function Footer() {
                 IndieShows
               </h4>
             </div>
-            <p className="text-slate-400 mb-4">
+            <p className={`mb-4 ${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}>
               Your premier destination for the latest movies and unforgettable
               cinema experiences.
             </p>
             <div className="flex space-x-4">
               <a
                 href="#"
-                className="text-slate-400 hover:text-emerald-400 transition-colors"
+                className={`hover:text-emerald-400 transition-colors ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="text-slate-400 hover:text-emerald-400 transition-colors"
+                className={`hover:text-emerald-400 transition-colors ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
               >
                 <Twitter className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="text-slate-400 hover:text-emerald-400 transition-colors"
+                className={`hover:text-emerald-400 transition-colors ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
               >
                 <Instagram className="w-5 h-5" />
               </a>
               <a
                 href="#"
-                className="text-slate-400 hover:text-emerald-400 transition-colors"
+                className={`hover:text-emerald-400 transition-colors ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
               >
                 <Youtube className="w-5 h-5" />
               </a>
@@ -56,12 +75,20 @@ export default function Footer() {
           </div>
 
           <div>
-            <h5 className="text-white font-semibold mb-4">Quick Links</h5>
+            <h5 className={`font-semibold mb-4 ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
+              Quick Links
+            </h5>
             <ul className="space-y-2">
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Now Showing
                 </a>
@@ -69,7 +96,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Coming Soon
                 </a>
@@ -77,7 +108,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Theaters
                 </a>
@@ -85,7 +120,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Events
                 </a>
@@ -93,7 +132,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Gift Cards
                 </a>
@@ -102,12 +145,20 @@ export default function Footer() {
           </div>
 
           <div>
-            <h5 className="text-white font-semibold mb-4">Support</h5>
+            <h5 className={`font-semibold mb-4 ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
+              Support
+            </h5>
             <ul className="space-y-2">
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Help Center
                 </a>
@@ -115,7 +166,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Contact Us
                 </a>
@@ -123,7 +178,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Feedback
                 </a>
@@ -131,7 +190,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Terms & Conditions
                 </a>
@@ -139,7 +202,11 @@ export default function Footer() {
               <li>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className={`transition-colors ${
+                    isDark 
+                      ? "text-slate-400 hover:text-white" 
+                      : "text-slate-600 hover:text-slate-900"
+                  }`}
                 >
                   Privacy Policy
                 </a>
@@ -148,26 +215,46 @@ export default function Footer() {
           </div>
 
           <div>
-            <h5 className="text-white font-semibold mb-4">Contact Info</h5>
+            <h5 className={`font-semibold mb-4 ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
+              Contact Info
+            </h5>
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
                 <Phone className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-400">+1 (555) 123-4567</span>
+                <span className={`${
+                  isDark ? "text-slate-400" : "text-slate-600"
+                }`}>
+                  +1 (555) 123-4567
+                </span>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-400">info@indieshows.com</span>
+                <span className={`${
+                  isDark ? "text-slate-400" : "text-slate-600"
+                }`}>
+                  info@indieshows.com
+                </span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-400">Movie City, Bhopal</span>
+                <span className={`${
+                  isDark ? "text-slate-400" : "text-slate-600"
+                }`}>
+                  Movie City, Bhopal
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-slate-800 pt-8 text-center">
-          <p className="text-slate-400">
+        <div className={`border-t pt-8 text-center ${
+          isDark ? "border-slate-800" : "border-slate-200"
+        }`}>
+          <p className={`${
+            isDark ? "text-slate-400" : "text-slate-600"
+          }`}>
             © 2025 IndieShows. All rights reserved.
           </p>
         </div>

@@ -5,7 +5,7 @@ import { Clock, Plus, Trash2, Calendar, AlertCircle } from "lucide-react";
 import { useAuth, useUser } from "@clerk/clerk-react";
 
 const AddShow = () => {
-  const { movies, fetchMovies, loading, setLoading } = useMovieStore();
+  const { movies, fetchMovies, loading, setLoading, theme } = useMovieStore();
   const [movieId, setMovieId] = useState("");
   const [showPrice, setShowPrice] = useState("");
   const [totalSeats, setTotalSeats] = useState(100);
@@ -17,6 +17,8 @@ const AddShow = () => {
   });
   const user = useUser();
   const token = useAuth();
+
+  const isDark = theme === "dark";
 
   useEffect(() => {
     fetchMovies();
@@ -220,19 +222,31 @@ const AddShow = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl bg-slate-800 rounded-xl shadow-md border border-slate-600">
-      <h2 className="text-2xl font-bold text-white mb-6">Add New Shows</h2>
+    <div className={`p-6 max-w-4xl rounded-xl shadow-md border ${
+      isDark 
+        ? "bg-slate-800 border-slate-600" 
+        : "bg-white border-slate-200 shadow-lg"
+    }`}>
+      <h2 className={`text-2xl font-bold mb-6 ${
+        isDark ? "text-white" : "text-slate-900"
+      }`}>Add New Shows</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Movie Selector */}
         <div className="relative">
-          <label className="block text-slate-300 mb-1">
+          <label className={`block mb-1 ${
+            isDark ? "text-slate-300" : "text-slate-700"
+          }`}>
             Select Movie <span className="text-red-400">*</span>
           </label>
           <select
             value={movieId}
             onChange={handleMovieChange}
-            className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
+            className={`w-full border text-sm rounded px-3 py-2 focus:outline-none focus:border-emerald-500 ${
+              isDark 
+                ? "bg-slate-700 border-slate-600 text-white" 
+                : "bg-slate-50 border-slate-300 text-slate-900"
+            }`}
             required
           >
             <option value="" disabled>
@@ -249,7 +263,9 @@ const AddShow = () => {
         {/* Show Price and Total Seats */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-slate-300 mb-1">
+            <label className={`block mb-1 ${
+              isDark ? "text-slate-300" : "text-slate-700"
+            }`}>
               Show Price (₹) <span className="text-red-400">*</span>
             </label>
             <input
@@ -257,14 +273,20 @@ const AddShow = () => {
               value={showPrice}
               onChange={(e) => setShowPrice(e.target.value)}
               min="1"
-              className="w-full bg-slate-700 border border-slate-600 text-white rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:border-emerald-500 ${
+                isDark 
+                  ? "bg-slate-700 border-slate-600 text-white placeholder-slate-400" 
+                  : "bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-500"
+              }`}
               placeholder="Enter price in rupees"
               required
             />
           </div>
 
           <div>
-            <label className="block text-slate-300 mb-1">
+            <label className={`block mb-1 ${
+              isDark ? "text-slate-300" : "text-slate-700"
+            }`}>
               Total Seats <span className="text-red-400">*</span>
             </label>
             <input
@@ -273,7 +295,11 @@ const AddShow = () => {
               onChange={(e) => setTotalSeats(e.target.value)}
               min="1"
               max="500"
-              className="w-full bg-slate-700 border border-slate-600 text-white rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:border-emerald-500 ${
+                isDark 
+                  ? "bg-slate-700 border-slate-600 text-white placeholder-slate-400" 
+                  : "bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-500"
+              }`}
               placeholder="Theater capacity"
               required
             />
@@ -281,15 +307,23 @@ const AddShow = () => {
         </div>
 
         {/* Date and Time Input Section */}
-        <div className="bg-slate-700 rounded-lg p-4 border border-slate-600">
-          <label className="block text-slate-300 mb-3 flex items-center">
+        <div className={`rounded-lg p-4 border ${
+          isDark 
+            ? "bg-slate-700 border-slate-600" 
+            : "bg-slate-50 border-slate-200"
+        }`}>
+          <label className={`block mb-3 flex items-center ${
+            isDark ? "text-slate-300" : "text-slate-700"
+          }`}>
             <Calendar className="w-4 h-4 mr-2" />
             Add Date & Time
           </label>
 
           {/* DateTime Input */}
           <div className="mb-4">
-            <label className="block text-slate-300 text-sm mb-2 flex items-center">
+            <label className={`block text-sm mb-2 flex items-center ${
+              isDark ? "text-slate-300" : "text-slate-600"
+            }`}>
               <Clock className="w-4 h-4 mr-2" />
               Select Date and Time
             </label>
@@ -298,7 +332,11 @@ const AddShow = () => {
               value={currentDateTime}
               onChange={(e) => setCurrentDateTime(e.target.value)}
               min={getMinDateTime()}
-              className="w-full bg-slate-600 border border-slate-500 text-white rounded px-3 py-2 focus:outline-none focus:border-emerald-500"
+              className={`w-full border rounded px-3 py-2 focus:outline-none focus:border-emerald-500 ${
+                isDark 
+                  ? "bg-slate-600 border-slate-500 text-white" 
+                  : "bg-white border-slate-300 text-slate-900"
+              }`}
             />
           </div>
 
@@ -307,7 +345,11 @@ const AddShow = () => {
             type="button"
             onClick={handleAddDateTime}
             disabled={!movieId || !currentDateTime || conflictCheck.checking}
-            className="text-emerald-400 hover:text-emerald-300 text-sm cursor-pointer flex items-center mb-4 disabled:text-slate-500 disabled:cursor-not-allowed"
+            className={`text-sm cursor-pointer flex items-center mb-4 disabled:cursor-not-allowed ${
+              conflictCheck.checking || !movieId || !currentDateTime
+                ? isDark ? "text-slate-500" : "text-slate-400"
+                : "text-emerald-500 hover:text-emerald-400"
+            }`}
           >
             <Plus className="w-4 h-4 mr-1" />
             {conflictCheck.checking ? "Checking availability..." : "Add Date & Time"}
@@ -315,7 +357,7 @@ const AddShow = () => {
 
           {/* Checking Status */}
           {conflictCheck.checking && (
-            <div className="flex items-center text-yellow-400 text-sm mb-4">
+            <div className="flex items-center text-yellow-500 text-sm mb-4">
               <AlertCircle className="w-4 h-4 mr-2" />
               Checking availability...
             </div>
@@ -324,13 +366,19 @@ const AddShow = () => {
           {/* Display Added Dates and Timings */}
           {dateTimingsMap.size > 0 && (
             <div className="mt-4">
-              <h4 className="text-slate-300 text-sm mb-3">Added Shows:</h4>
+              <h4 className={`text-sm mb-3 ${
+                isDark ? "text-slate-300" : "text-slate-600"
+              }`}>Added Shows:</h4>
               {Array.from(dateTimingsMap.entries())
                 .sort(([a], [b]) => new Date(a) - new Date(b)) // Sort by date
                 .map(([date, timings]) => (
-                  <div key={date} className="bg-slate-600 rounded p-3 mb-2">
+                  <div key={date} className={`rounded p-3 mb-2 ${
+                    isDark ? "bg-slate-600" : "bg-slate-100"
+                  }`}>
                     <div className="flex items-center justify-between mb-2">
-                      <p className="text-white font-medium">
+                      <p className={`font-medium ${
+                        isDark ? "text-white" : "text-slate-900"
+                      }`}>
                         {new Date(date).toLocaleDateString("en-IN", {
                           weekday: "short",
                           year: "numeric",
@@ -341,7 +389,7 @@ const AddShow = () => {
                       <button
                         type="button"
                         onClick={() => handleRemoveDate(date)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-red-500 hover:text-red-400"
                         title="Remove all shows for this date"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -351,13 +399,13 @@ const AddShow = () => {
                       {timings.map((timing, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 rounded text-sm flex items-center gap-1 bg-emerald-600 text-white"
+                          className="px-2 py-1 rounded text-sm flex items-center gap-1 bg-emerald-500 text-white"
                         >
                           {timing}
                           <button
                             type="button"
                             onClick={() => handleRemoveTiming(date, timing)}
-                            className="text-red-300 hover:text-red-200 ml-1"
+                            className="text-red-200 hover:text-red-100 ml-1"
                             title="Remove this timing"
                           >
                             ×
@@ -373,9 +421,17 @@ const AddShow = () => {
 
         {/* Summary */}
         {dateTimingsMap.size > 0 && (
-          <div className="bg-slate-700 rounded-lg p-4 border border-slate-600">
-            <h4 className="text-slate-300 text-sm mb-2">Summary:</h4>
-            <div className="text-slate-400 text-sm space-y-1">
+          <div className={`rounded-lg p-4 border ${
+            isDark 
+              ? "bg-slate-700 border-slate-600" 
+              : "bg-slate-50 border-slate-200"
+          }`}>
+            <h4 className={`text-sm mb-2 ${
+              isDark ? "text-slate-300" : "text-slate-600"
+            }`}>Summary:</h4>
+            <div className={`text-sm space-y-1 ${
+              isDark ? "text-slate-400" : "text-slate-500"
+            }`}>
               <p>
                 Total Shows:{" "}
                 {Array.from(dateTimingsMap.values()).reduce(

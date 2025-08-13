@@ -34,7 +34,10 @@ export default function BookingPage() {
     groupShowsByDate,
     selectedSeats,
     setSelectedSeats,
+    theme, // Add theme from store
   } = useMovieStore();
+
+  const isDark = theme === "dark";
 
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
@@ -210,8 +213,14 @@ export default function BookingPage() {
 
   if (shouldShowLoading) {
     return (
-      <div className="min-h-screen bg-slate-800 flex items-center justify-center">
-        <div className="flex items-center text-white">
+      <div className={`min-h-screen flex items-center justify-center ${
+        isDark 
+          ? "bg-slate-800" 
+          : "bg-slate-100"
+      }`}>
+        <div className={`flex items-center ${
+          isDark ? "text-white" : "text-slate-800"
+        }`}>
           <Loader className="w-6 h-6 animate-spin mr-2" />
           Loading movie details...
         </div>
@@ -219,16 +228,20 @@ export default function BookingPage() {
     );
   }
 
-  // Remove this duplicate loading check since we handle it above
-
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-800 flex items-center justify-center">
-        <div className="text-center text-white">
+      <div className={`min-h-screen flex items-center justify-center ${
+        isDark 
+          ? "bg-slate-800" 
+          : "bg-slate-100"
+      }`}>
+        <div className={`text-center ${
+          isDark ? "text-white" : "text-slate-800"
+        }`}>
           <p className="text-red-400 mb-4">{error}</p>
           <button
             onClick={() => navigate("/")}
-            className="bg-emerald-500 px-4 py-2 rounded-lg hover:bg-emerald-600"
+            className="bg-emerald-500 px-4 py-2 rounded-lg hover:bg-emerald-600 text-white"
           >
             Go Back
           </button>
@@ -243,10 +256,18 @@ export default function BookingPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-800">
+    <div className={`min-h-screen ${
+      isDark 
+        ? "bg-gradient-to-b from-slate-900 to-slate-800" 
+        : "bg-gradient-to-b from-slate-50 to-slate-100"
+    }`}>
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Movie Info */}
-        <div className="bg-slate-700 rounded-2xl p-6 mb-8 border border-slate-600">
+        <div className={`rounded-2xl p-6 mb-8 border ${
+          isDark 
+            ? "bg-slate-700 border-slate-600" 
+            : "bg-white border-slate-200 shadow-lg"
+        }`}>
           <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
             <img
               src={currentMovie?.Poster}
@@ -254,10 +275,16 @@ export default function BookingPage() {
               draggable={false}
               className="w-32 h-48 rounded-xl object-cover shadow-lg"
             />
-            <div className="text-white flex-1">
+            <div className={`flex-1 ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
               <h2 className="text-3xl font-bold mb-2">{currentMovie?.Title}</h2>
-              <p className="text-slate-300 mb-2">{currentMovie?.Genre}</p>
-              <p className="text-slate-400 text-sm mb-4">
+              <p className={`mb-2 ${
+                isDark ? "text-slate-300" : "text-slate-600"
+              }`}>{currentMovie?.Genre}</p>
+              <p className={`text-sm mb-4 ${
+                isDark ? "text-slate-400" : "text-slate-500"
+              }`}>
                 {currentMovie?.Plot}
               </p>
 
@@ -266,18 +293,30 @@ export default function BookingPage() {
                   <Star className="w-4 h-4 mr-1 text-yellow-400" />
                   {currentMovie?.Ratings || "N/A"}
                 </span>
-                <span className="flex items-center text-slate-300">
-                  <Clock className="w-4 h-4 mr-1 text-slate-300" />
+                <span className={`flex items-center ${
+                  isDark ? "text-slate-300" : "text-slate-600"
+                }`}>
+                  <Clock className="w-4 h-4 mr-1" />
                   {currentMovie?.Runtime}
                 </span>
-                <span className="flex items-center text-slate-300">
-                  <MapPin className="w-4 h-4 mr-1 text-slate-300" />
+                <span className={`flex items-center ${
+                  isDark ? "text-slate-300" : "text-slate-600"
+                }`}>
+                  <MapPin className="w-4 h-4 mr-1" />
                   CinemaVibe Multiplex
                 </span>
-                <span className="bg-slate-600 px-3 py-1 rounded-full text-slate-200">
+                <span className={`px-3 py-1 rounded-full ${
+                  isDark 
+                    ? "bg-slate-600 text-slate-200" 
+                    : "bg-slate-200 text-slate-700"
+                }`}>
                   {currentMovie?.Rated}
                 </span>
-                <span className="bg-slate-600 px-3 py-1 rounded-full text-slate-200">
+                <span className={`px-3 py-1 rounded-full ${
+                  isDark 
+                    ? "bg-slate-600 text-slate-200" 
+                    : "bg-slate-200 text-slate-700"
+                }`}>
                   <button
                     onClick={() => toggleFavorite(currentMovie._id)}
                     className="backdrop-blur-sm rounded-full p-1 transition-colors bg-black/50"
@@ -297,16 +336,28 @@ export default function BookingPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6">
                 <div>
-                  <span className="text-slate-400">Director:</span>
-                  <p className="text-slate-200">{currentMovie?.Director}</p>
+                  <span className={`${
+                    isDark ? "text-slate-400" : "text-slate-500"
+                  }`}>Director:</span>
+                  <p className={`${
+                    isDark ? "text-slate-200" : "text-slate-700"
+                  }`}>{currentMovie?.Director}</p>
                 </div>
                 <div>
-                  <span className="text-slate-400">Language:</span>
-                  <p className="text-slate-200">{currentMovie?.Language}</p>
+                  <span className={`${
+                    isDark ? "text-slate-400" : "text-slate-500"
+                  }`}>Language:</span>
+                  <p className={`${
+                    isDark ? "text-slate-200" : "text-slate-700"
+                  }`}>{currentMovie?.Language}</p>
                 </div>
                 <div className="md:col-span-2">
-                  <span className="text-slate-400">Cast:</span>
-                  <p className="text-slate-200">{currentMovie?.Actors}</p>
+                  <span className={`${
+                    isDark ? "text-slate-400" : "text-slate-500"
+                  }`}>Cast:</span>
+                  <p className={`${
+                    isDark ? "text-slate-200" : "text-slate-700"
+                  }`}>{currentMovie?.Actors}</p>
                 </div>
               </div>
             </div>
@@ -314,8 +365,14 @@ export default function BookingPage() {
         </div>
 
         {/* Date Selection */}
-        <div className="bg-slate-700 rounded-2xl p-6 mb-6 border border-slate-600">
-          <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+        <div className={`rounded-2xl p-6 mb-6 border ${
+          isDark 
+            ? "bg-slate-700 border-slate-600" 
+            : "bg-white border-slate-200 shadow-lg"
+        }`}>
+          <h3 className={`text-xl font-semibold mb-4 flex items-center ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}>
             <Calendar className="w-5 h-5 mr-2" />
             Select Date
           </h3>
@@ -327,7 +384,9 @@ export default function BookingPage() {
                 className={`px-6 py-3 rounded-lg font-medium transition-all ${
                   selectedDate === dateString
                     ? "bg-emerald-500 text-white shadow-lg"
-                    : "bg-slate-600 text-slate-300 hover:bg-slate-500"
+                    : isDark
+                    ? "bg-slate-600 text-slate-300 hover:bg-slate-500"
+                    : "bg-slate-200 text-slate-700 hover:bg-slate-300"
                 }`}
               >
                 <div className="text-center">
@@ -348,8 +407,14 @@ export default function BookingPage() {
 
         {/* Time Selection */}
         {selectedDate && (
-          <div className="bg-slate-700 rounded-2xl p-6 mb-6 border border-slate-600">
-            <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
+          <div className={`rounded-2xl p-6 mb-6 border ${
+            isDark 
+              ? "bg-slate-700 border-slate-600" 
+              : "bg-white border-slate-200 shadow-lg"
+          }`}>
+            <h3 className={`text-xl font-semibold mb-4 flex items-center ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
               <Clock className="w-5 h-5 mr-2" />
               Select Show Time
             </h3>
@@ -363,7 +428,9 @@ export default function BookingPage() {
                     selectedTime === show.showTime
                       ? "bg-emerald-500 text-white shadow-lg"
                       : show.status === "active"
-                      ? "bg-slate-600 text-slate-300 hover:bg-slate-500"
+                      ? isDark
+                        ? "bg-slate-600 text-slate-300 hover:bg-slate-500"
+                        : "bg-slate-200 text-slate-700 hover:bg-slate-300"
                       : "bg-red-600/20 text-red-400"
                   }`}
                 >
@@ -387,30 +454,52 @@ export default function BookingPage() {
 
         {/* Selected Show Summary */}
         {selectedShowData && (
-          <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-2xl p-6 mb-6">
-            <h3 className="text-lg font-semibold text-emerald-400 mb-3">
+          <div className={`rounded-2xl p-6 mb-6 ${
+            isDark 
+              ? "bg-emerald-900/20 border border-emerald-500/30" 
+              : "bg-emerald-50 border border-emerald-200"
+          }`}>
+            <h3 className={`text-lg font-semibold mb-3 ${
+              isDark ? "text-emerald-400" : "text-emerald-700"
+            }`}>
               Selected Show Details
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
               <div>
-                <span className="text-slate-400">Movie:</span>
-                <p className="text-white font-medium">{currentMovie?.Title}</p>
+                <span className={`${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}>Movie:</span>
+                <p className={`font-medium ${
+                  isDark ? "text-white" : "text-slate-900"
+                }`}>{currentMovie?.Title}</p>
               </div>
               <div>
-                <span className="text-slate-400">Date:</span>
-                <p className="text-white font-medium">
+                <span className={`${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}>Date:</span>
+                <p className={`font-medium ${
+                  isDark ? "text-white" : "text-slate-900"
+                }`}>
                   {formatDateForDisplay(selectedDate)}
                 </p>
               </div>
               <div>
-                <span className="text-slate-400">Time:</span>
-                <p className="text-white font-medium">
+                <span className={`${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}>Time:</span>
+                <p className={`font-medium ${
+                  isDark ? "text-white" : "text-slate-900"
+                }`}>
                   {selectedShowData.showTime}
                 </p>
               </div>
               <div>
-                <span className="text-slate-400">Price per Seat:</span>
-                <p className="text-emerald-400 font-medium text-lg">
+                <span className={`${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}>Price per Seat:</span>
+                <p className={`font-medium text-lg ${
+                  isDark ? "text-emerald-400" : "text-emerald-600"
+                }`}>
                   ₹{selectedShowData.showPrice}
                 </p>
               </div>
@@ -420,9 +509,15 @@ export default function BookingPage() {
 
         {/* Loading Seats */}
         {loadingSeats && (
-          <div className="bg-slate-700 rounded-2xl p-8 mb-6 border border-slate-600 text-center">
+          <div className={`rounded-2xl p-8 mb-6 border text-center ${
+            isDark 
+              ? "bg-slate-700 border-slate-600" 
+              : "bg-white border-slate-200 shadow-lg"
+          }`}>
             <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-emerald-400" />
-            <p className="text-slate-300">Loading seat information...</p>
+            <p className={`${
+              isDark ? "text-slate-300" : "text-slate-600"
+            }`}>Loading seat information...</p>
           </div>
         )}
 
@@ -439,8 +534,12 @@ export default function BookingPage() {
         {/* No selection messages */}
         {!selectedDate && (
           <div className="text-center py-12">
-            <Calendar className="w-16 h-16 text-slate-500 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg">
+            <Calendar className={`w-16 h-16 mx-auto mb-4 ${
+              isDark ? "text-slate-500" : "text-slate-300"
+            }`} />
+            <p className={`text-lg ${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}>
               Please select a date to see available show times
             </p>
           </div>
@@ -448,8 +547,12 @@ export default function BookingPage() {
 
         {selectedDate && !selectedTime && (
           <div className="text-center py-12">
-            <Clock className="w-16 h-16 text-slate-500 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg">
+            <Clock className={`w-16 h-16 mx-auto mb-4 ${
+              isDark ? "text-slate-500" : "text-slate-300"
+            }`} />
+            <p className={`text-lg ${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}>
               Please select a show time to continue
             </p>
           </div>

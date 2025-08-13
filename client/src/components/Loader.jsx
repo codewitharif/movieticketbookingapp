@@ -1,14 +1,28 @@
 import React from "react";
+import { Loader } from "lucide-react";
+import useMovieStore from "../store/useMovieStore";
 
-const Loader = () => {
+const Loader2 = () => {
+  const { theme } = useMovieStore();
+  const isDark = theme === "dark";
+
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+    <div className={`min-h-screen flex items-center justify-center ${
+      isDark ? "bg-slate-900" : "bg-gray-50"
+    }`}>
       <div className="flex flex-col items-center space-y-4">
-        <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-        {/* <p className="text-white text-lg font-medium">Loading...</p> */}
+        <Loader className={`w-12 h-12 animate-spin ${
+          isDark ? "text-white" : "text-slate-800"
+        }`} />
+        {/* <p className={`text-lg font-medium ${
+          isDark ? "text-white" : "text-slate-800"
+        }`}>Loading...</p> */}
       </div>
     </div>
   );
 };
 
-export default Loader;
+export default Loader2;
+
+
+<Loader />

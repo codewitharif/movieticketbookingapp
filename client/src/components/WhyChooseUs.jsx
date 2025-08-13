@@ -1,12 +1,25 @@
 import { Users, Calendar, MapPin } from 'lucide-react';
+import useMovieStore from '../store/useMovieStore'; // Import your Zustand store
 
 export default function WhyChooseUs() {
+  // Get theme from Zustand store
+  const { theme } = useMovieStore();
+  const isDark = theme === "dark";
+
   return (
-    <section className="py-16 bg-slate-800">
+    <section className={`py-16 ${
+      isDark ? "bg-slate-800" : "bg-slate-50"
+    }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="text-center mb-12">
-          <h3 className="text-4xl font-bold text-white mb-4">Why Choose IndieShows?</h3>
-          <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+          <h3 className={`text-4xl font-bold mb-4 ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}>
+            Why Choose IndieShows?
+          </h3>
+          <p className={`text-xl max-w-2xl mx-auto ${
+            isDark ? "text-slate-400" : "text-slate-600"
+          }`}>
             Experience cinema like never before with our premium facilities and services
           </p>
         </div>
@@ -34,15 +47,27 @@ export default function WhyChooseUs() {
           ].map((card, index) => (
             <div
               key={index}
-              className="text-center group bg-slate-700/30 border border-slate-600 rounded-2xl p-8 shadow-md hover:shadow-xl transition-shadow duration-300 hover:scale-[1.03] hover:border-emerald-500/50 transition-all duration-300"
+              className={`text-center group rounded-2xl p-8 transition-all duration-300 hover:scale-[1.03] ${
+                isDark 
+                  ? "bg-slate-700/30 border border-slate-600 shadow-md hover:shadow-xl hover:border-emerald-500/50" 
+                  : "bg-white border border-slate-200 shadow-lg hover:shadow-2xl hover:border-emerald-400/50"
+              }`}
             >
               <div
                 className={`w-20 h-20 bg-gradient-to-r ${card.gradient} rounded-2xl flex items-center justify-center mx-auto mb-6 transform transition-transform duration-300 group-hover:rotate-6`}
               >
                 {card.icon}
               </div>
-              <h4 className="text-2xl font-semibold text-white mb-4">{card.title}</h4>
-              <p className="text-slate-400 leading-relaxed">{card.desc}</p>
+              <h4 className={`text-2xl font-semibold mb-4 ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}>
+                {card.title}
+              </h4>
+              <p className={`leading-relaxed ${
+                isDark ? "text-slate-400" : "text-slate-600"
+              }`}>
+                {card.desc}
+              </p>
             </div>
           ))}
         </div>

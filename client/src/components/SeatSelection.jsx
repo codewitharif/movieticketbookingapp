@@ -17,7 +17,8 @@ export default function SeatSelection({
   const { getToken } = useAuth();
   const [bookingLoading, setBookingLoading] = useState(false);
 
-  const { selectedSeats, setSelectedSeats, selectedMovie } = useMovieStore();
+  const { selectedSeats, setSelectedSeats, selectedMovie, theme } = useMovieStore();
+  const isDark = theme === "dark";
 
   // Generate seats layout
   const generateSeats = () => {
@@ -50,7 +51,9 @@ export default function SeatSelection({
         return "bg-emerald-500 text-white shadow-lg transform scale-110";
       case "available":
       default:
-        return "bg-slate-600 hover:bg-slate-500 text-slate-300 cursor-pointer";
+        return isDark 
+          ? "bg-slate-600 hover:bg-slate-500 text-slate-300 cursor-pointer" 
+          : "bg-slate-200 hover:bg-slate-300 text-slate-700 cursor-pointer";
     }
   };
 
@@ -62,7 +65,6 @@ export default function SeatSelection({
 
     // Check if user is logged in
     if (!isSignedIn) {
-      // toast.error("Please login to select seats");
       navigate("/sign-in");
       return;
     }
@@ -83,7 +85,6 @@ export default function SeatSelection({
   // Handle booking creation
   const handleBooking = async () => {
     if (!isSignedIn) {
-      // toast.error("Please login to book tickets");
       navigate("/sign-in");
       return;
     }
@@ -143,18 +144,18 @@ export default function SeatSelection({
   const currentMovie = selectedShow?.movie || selectedMovie;
 
   return (
-    <div className="bg-slate-800/50 backdrop-blur-md rounded-2xl p-8 border border-slate-700">
-      <h3 className="text-3xl font-bold text-white mb-8 text-center">
+    <div className={`${isDark ? 'bg-slate-800/50 border-slate-700' : 'bg-white/80 border-slate-200'} backdrop-blur-md rounded-2xl p-8 border`}>
+      <h3 className={`text-3xl font-bold mb-8 text-center ${isDark ? 'text-white' : 'text-slate-900'}`}>
         Choose Your Seats
       </h3>
 
       {/* Login Warning for non-authenticated users */}
       {!isSignedIn && (
-        <div className="bg-yellow-600/20 border border-yellow-500/30 rounded-xl p-4 mb-6">
+        <div className={`${isDark ? 'bg-yellow-600/20 border-yellow-500/30' : 'bg-yellow-100 border-yellow-200'} rounded-xl p-4 mb-6 border`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <LogIn className="w-5 h-5 text-yellow-400" />
-              <p className="text-yellow-200">
+              <LogIn className={`w-5 h-5 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`} />
+              <p className={isDark ? 'text-yellow-200' : 'text-yellow-800'}>
                 You can view seats but need to login to book tickets
               </p>
             </div>
@@ -170,8 +171,8 @@ export default function SeatSelection({
 
       {/* Screen */}
       <div className="relative mb-12">
-        <div className="h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent rounded-full mb-4"></div>
-        <p className="text-center text-slate-400 text-sm font-medium tracking-widest">
+        <div className={`h-1 bg-gradient-to-r from-transparent ${isDark ? 'via-emerald-400' : 'via-emerald-500'} to-transparent rounded-full mb-4`}></div>
+        <p className={`text-center text-sm font-medium tracking-widest ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
           S C R E E N
         </p>
       </div>
@@ -183,7 +184,7 @@ export default function SeatSelection({
           {["A", "B", "C", "D", "E", "F", "G", "H"].map((row) => (
             <div key={row} className="mb-3">
               <div className="flex items-center">
-                <div className="w-6 text-slate-400 text-sm font-medium">
+                <div className={`w-6 text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   {row}
                 </div>
                 <div className="flex gap-1 flex-wrap mx-2 flex-1 justify-center">
@@ -197,14 +198,14 @@ export default function SeatSelection({
                           onClick={() => handleSeatClick(seat)}
                           disabled={status === "booked" || bookingLoading}
                           className={`
-                    w-7 h-7 
-                    rounded-md 
-                    text-xs 
-                    font-semibold 
-                    transition-all duration-200 
-                    disabled:cursor-not-allowed
-                    ${getSeatColor(status)}
-                  `}
+                            w-7 h-7 
+                            rounded-md 
+                            text-xs 
+                            font-semibold 
+                            transition-all duration-200 
+                            disabled:cursor-not-allowed
+                            ${getSeatColor(status)}
+                          `}
                         >
                           {seatNum}
                         </button>
@@ -212,7 +213,7 @@ export default function SeatSelection({
                     }
                   )}
                 </div>
-                <div className="w-6 text-slate-400 text-sm font-medium">
+                <div className={`w-6 text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   {row}
                 </div>
               </div>
@@ -224,7 +225,7 @@ export default function SeatSelection({
         <div className="hidden sm:block max-w-4xl mx-auto">
           {["A", "B", "C", "D", "E", "F", "G", "H"].map((row) => (
             <div key={row} className="flex items-center justify-center mb-3">
-              <div className="w-6 text-slate-400 text-sm font-medium">
+              <div className={`w-6 text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 {row}
               </div>
               <div className="flex gap-2 mx-4">
@@ -245,7 +246,7 @@ export default function SeatSelection({
                   );
                 })}
               </div>
-              <div className="w-6 text-slate-400 text-sm font-medium">
+              <div className={`w-6 text-sm font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 {row}
               </div>
             </div>
@@ -256,32 +257,31 @@ export default function SeatSelection({
       {/* Legend */}
       <div className="flex justify-center space-x-8 mb-8">
         <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 bg-slate-600 rounded-md"></div>
-          <span className="text-slate-300 text-sm">Available</span>
+          <div className={`w-6 h-6 rounded-md ${isDark ? 'bg-slate-600' : 'bg-slate-200'}`}></div>
+          <span className={isDark ? 'text-slate-300' : 'text-slate-600'} className="text-sm">Available</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 bg-emerald-500 rounded-md"></div>
-          <span className="text-slate-300 text-sm">Selected</span>
+          <span className={isDark ? 'text-slate-300' : 'text-slate-600'} className="text-sm">Selected</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-6 h-6 bg-red-500 rounded-md"></div>
-          <span className="text-slate-300 text-sm">Booked</span>
+          <span className={isDark ? 'text-slate-300' : 'text-slate-600'} className="text-sm">Booked</span>
         </div>
       </div>
 
       {/* Seat Selection Info */}
       <div className="text-center mb-6">
-        <p className="text-slate-400 text-sm">
+        <p className={isDark ? 'text-slate-400' : 'text-slate-600'} className="text-sm">
           You can select up to 8 seats.
           {selectedSeats.length > 0 && (
             <span className="text-emerald-400 ml-2">
-              {selectedSeats.length} seat{selectedSeats.length > 1 ? "s" : ""}{" "}
-              selected
+              {selectedSeats.length} seat{selectedSeats.length > 1 ? 's' : ''} selected
             </span>
           )}
         </p>
         {selectedSeats.length > 0 && (
-          <p className="text-slate-300 text-sm mt-2">
+          <p className={isDark ? 'text-slate-300' : 'text-slate-700'} className="text-sm mt-2">
             Selected seats: {selectedSeats.join(", ")}
           </p>
         )}
@@ -289,7 +289,7 @@ export default function SeatSelection({
 
       {/* Booking Summary */}
       {selectedSeats.length > 0 && currentMovie && (
-        <div className="bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-2xl p-6 text-white shadow-2xl">
+        <div className={`bg-gradient-to-r from-emerald-600 to-cyan-600 rounded-2xl p-6 text-white shadow-2xl`}>
           <div className="flex justify-between items-center mb-6">
             <div>
               <h4 className="text-xl font-bold mb-2">Booking Summary</h4>
@@ -351,9 +351,8 @@ export default function SeatSelection({
 
       {/* Show availability info */}
       <div className="mt-6 text-center">
-        <p className="text-slate-400 text-sm">
-          Available Seats: {selectedShow.availableSeats} /{" "}
-          {selectedShow.totalSeats}
+        <p className={isDark ? 'text-slate-400' : 'text-slate-600'} className="text-sm">
+          Available Seats: {selectedShow.availableSeats} / {selectedShow.totalSeats}
         </p>
         {Object.keys(occupiedSeats).length > 0 && (
           <p className="text-red-400 text-sm mt-1">

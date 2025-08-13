@@ -6,7 +6,7 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "../App.css"
+import "../App.css";
 
 export default function HeroSlider({ featuredMovies }) {
   const [showTrailerModal, setShowTrailerModal] = useState(false);
@@ -75,7 +75,7 @@ export default function HeroSlider({ featuredMovies }) {
 
   return (
     <>
-      <section className="relative h-96 md:h-[500px] overflow-hidden">
+      <section className="relative h-96 md:h-[660px] overflow-hidden">
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           navigation

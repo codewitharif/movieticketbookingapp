@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useMovieStore from "../store/useMovieStore";
+// import { useStore } from "../store/useStore"; // Import your Zustand store
 import { useAuth } from "@clerk/clerk-react";
 import { Clock, Heart, Star, Loader } from "lucide-react";
 import axios from "axios";
@@ -9,10 +10,13 @@ const Favourites = () => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const { getToken } = useAuth();
   const {
+    theme,
     loading,
     setLoading,
     fetchFavoriteMovies: fetchFavoritesFromStore,
   } = useMovieStore();
+  
+  const isDark = theme === "dark";
 
   // Fetch favorites on mount
   useEffect(() => {
@@ -72,30 +76,50 @@ const Favourites = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 py-8">
+    <div className={`min-h-screen py-8 ${
+      isDark 
+        ? "bg-gradient-to-b from-slate-900 to-slate-800" 
+        : "bg-gradient-to-b from-slate-50 to-slate-100"
+    }`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-white mb-4">My Favourites</h1>
-          <p className="text-xl text-slate-400">
+          <h1 className={`text-4xl font-bold mb-4 ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}>
+            My Favourites
+          </h1>
+          <p className={`text-xl ${
+            isDark ? "text-slate-400" : "text-slate-600"
+          }`}>
             View and manage your favourites
           </p>
         </div>
 
         {loading ? (
           <div className="flex justify-center">
-            <div className="flex justify-center text-white">
+            <div className={`flex justify-center ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
               <Loader className="w-6 h-6 animate-spin mr-2" />
               Loading Favourite Movies...
             </div>
           </div>
         ) : favoriteMovies.length === 0 ? (
           <div className="text-center py-16">
-            <Heart className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <h3 className="text-2xl font-semibold text-white mb-2">
+            <Heart className={`w-16 h-16 mx-auto mb-4 ${
+              isDark ? "text-slate-600" : "text-slate-300"
+            }`} />
+            <h3 className={`text-2xl font-semibold mb-2 ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
               No favorites found
             </h3>
-            <p className="text-slate-400">You haven't made any favorites yet.</p>
+            <p className={`${
+              isDark ? "text-slate-400" : "text-slate-600"
+            }`}>
+              You haven't made any favorites yet.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
@@ -105,7 +129,11 @@ const Favourites = () => {
               return (
                 <div
                   key={movie._id}
-                  className="bg-slate-800/50 backdrop-blur-md rounded-xl border border-slate-700 hover:border-emerald-500/50 transition-all duration-300 overflow-hidden cursor-pointer"
+                  className={`backdrop-blur-md rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
+                    isDark 
+                      ? "bg-slate-800/50 border-slate-700 hover:border-emerald-500/50" 
+                      : "bg-white/80 border-slate-200 hover:border-emerald-400/50 shadow-lg hover:shadow-xl"
+                  }`}
                 >
                   <div className="relative">
                     <img
@@ -147,11 +175,19 @@ const Favourites = () => {
                   </div>
 
                   <div className="p-4">
-                    <h4 className="text-lg font-semibold text-white mb-1 group-hover:text-emerald-400 transition-colors">
+                    <h4 className={`text-lg font-semibold mb-1 group-hover:text-emerald-400 transition-colors ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}>
                       {movie.Title}
                     </h4>
-                    <p className="text-slate-400 text-xs mb-2">{movie.Genre}</p>
-                    <p className="text-slate-400 text-xs mb-2 flex items-center">
+                    <p className={`text-xs mb-2 ${
+                      isDark ? "text-slate-400" : "text-slate-600"
+                    }`}>
+                      {movie.Genre}
+                    </p>
+                    <p className={`text-xs mb-2 flex items-center ${
+                      isDark ? "text-slate-400" : "text-slate-600"
+                    }`}>
                       <Clock className="w-3 h-3 mr-1" />
                       {movie.Runtime}
                     </p>

@@ -12,13 +12,27 @@ export const featuredMovies = [
     genre: "Action • Crime • Drama",
     rating: 8.7,
     duration: "2h 45min",
-    poster:
-      "https://imgs.search.brave.com/2cDLqv2Q9OtC60_aDFV9sxbO1WIjlRoxRDV9WSrDAWw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJhY2Nlc3Mu/Y29tL2Z1bGwvOTU1/NzQ4Ny5qcGc",
+    poster: "https://i.ytimg.com/vi/e8tmerzWV_A/maxresdefault.jpg",
     description:
       "Pushpa returns stronger and more ruthless as he faces off against Bhanwar Singh in a high-stakes battle for supremacy.",
     price: 18,
     booking_link: "/booking/688dd7959811fd57f2d7aeb5",
     trailer_link: "https://youtu.be/1kVK0MZlbI4",
+  },
+
+  {
+    id: 4,
+    title: "Jawan",
+    genre: "Action • Thriller • Drama",
+    rating: 7.9,
+    duration: "2h 49min",
+    poster: "https://i.ytimg.com/vi/UUrHQSqFrwg/maxresdefault.jpg",
+    description:
+      "A man driven by a personal vendetta sets out to correct the wrongs in society, taking on a corrupt system with a daring plan.",
+    price: 17,
+
+    booking_link: "/booking/688dd8c69811fd57f2d7aeb7",
+    trailer_link: "https://youtu.be/k8YiqM0Y-78",
   },
   {
     id: 2,
@@ -27,7 +41,7 @@ export const featuredMovies = [
     rating: 8.0,
     duration: "2h 39min",
     poster:
-      "https://imgs.search.brave.com/Happ1WcW1T7_FOjvcyGf3giVE-EcaUwyPISjUrQWhYU/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDgyMzk4/NzguanBn",
+      "https://xstreamcp-assets-msp.streamready.in/assets/SONYLIV_VOD/MOVIE/64b6ac9c1e42943d88c5643c/images/bahubali_the_beginning_hindi_3july_landscape_thumb.jpg",
     description:
       "Shivudu, a daring young man, discovers his royal lineage and begins a journey to rescue a queen and reclaim a lost kingdom.",
     price: 12,
@@ -41,29 +55,14 @@ export const featuredMovies = [
     genre: "Comedy • Horror • Thriller",
     rating: 7.9,
     duration: "2h 10min",
-    poster:
-      "https://imgs.search.brave.com/FFLuRn3Escrs5V6Rva5LAo5GUbqFfA5DriKcx6HGaic/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuaGluZHVzdGFu/dGltZXMuY29tL2lt/Zy8yMDI0LzA4LzE1/LzU1MHgzMDkvc3Ry/ZWVfMl9yZXZpZXdf/c2hyYWRkaGFfa2Fw/b29yX3Jhamt1bW1h/cl9yYW9fMTcyMzY5/MjczNDgxN18xNzIz/NjkyNzM1MDA5Lmpw/Zw",
+    poster: "https://i.ytimg.com/vi/yWLH9Yp7BTE/maxresdefault.jpg",
     description:
       "Chanderi is haunted once again as Stree returns. The gang reunites to uncover the mystery behind her reappearance.",
     price: 13,
     booking_link: "/booking/688dd8c69811fd57f2d7aeb7",
     trailer_link: "https://youtu.be/VlvOgk5BHS4",
   },
-  {
-    id: 4,
-    title: "Jawan",
-    genre: "Action • Thriller • Drama",
-    rating: 7.9,
-    duration: "2h 49min",
-    poster:
-      "https://imgs.search.brave.com/-EdIXfYEMXWJW4_6SvD_ex8PLDieM_ggwl5n4tR5HF0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tLm1l/ZGlhLWFtYXpvbi5j/b20vaW1hZ2VzL00v/TVY1QlkySmhPVE14/WkdZdFpHVTNNUzAw/WlRsbExUbGpNakV0/WXpWalpUSXhaV05t/TTJSbFhrRXlYa0Zx/Y0djQC5qcGc",
-    description:
-      "A man driven by a personal vendetta sets out to correct the wrongs in society, taking on a corrupt system with a daring plan.",
-    price: 17,
 
-    booking_link: "/booking/688dd8c69811fd57f2d7aeb7",
-    trailer_link: "https://youtu.be/k8YiqM0Y-78",
-  },
   {
     id: 5,
     title: "Sitaare Zameen Par",
@@ -71,7 +70,7 @@ export const featuredMovies = [
     rating: 8.5,
     duration: "2h 38min",
     poster:
-      "https://imgs.search.brave.com/Tpo6yakug7dFqst8f04gwHc6ww_0PNPnmluv5dTUcd8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/a29pbW9pLmNvbS93/cC1jb250ZW50L25l/dy1nYWxsZXJpZXMv/MjAyNS8wNi9zaXRh/YXJlLXphbWVlbi1w/YXItbW92aWUtcmV2/aWV3LTIuanBn",
+      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiRnVmv3j3OiBgjb084hvbq6uoRatBj6DFHXbhX1v4w3Qm_VGv1TbE3c40vzOvub16JhSHN59GcZlvY5gcKK1jg0Odb0MxXPChuOqowVZGULqMkFZfaEh7Lo9v1UHqVPWHcat2E1lp8ivQ7v8_cJMOEqidJ9OIImqykFAQ7BiNRbcUEAGsuid-GWhTnwr0/s1024/Sitaare%20Zameen%20Par%20Movie%20Review.jpg",
     description:
       "A suspended basketball coach is ordered to train a team of players with disabilities, leading to an emotional journey of growth, inclusion, and triumph.",
     price: 20,
@@ -82,6 +81,7 @@ export const featuredMovies = [
 
 const useMovieStore = create((set, get) => ({
   // Main States - Real API data
+  theme: "light", // default theme
   isAdmin: false,
   movies: [], // Real movies from API
   shows: [], // Real shows from API
@@ -126,6 +126,13 @@ const useMovieStore = create((set, get) => ({
   setIsAdmin: (admin) => set({ isAdmin: admin }),
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error }),
+
+  // toogle the theme
+  toggleTheme: () =>
+    set((state) => ({
+      theme: state.theme === "dark" ? "light" : "dark",
+    })),
+  setTheme: (theme) => set({ theme }),
 
   // Fetch movies from API
   fetchMovies: async () => {
