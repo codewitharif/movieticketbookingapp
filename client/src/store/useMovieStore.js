@@ -12,7 +12,8 @@ export const featuredMovies = [
     genre: "Action • Crime • Drama",
     rating: 8.7,
     duration: "2h 45min",
-    poster: "https://i.ytimg.com/vi/e8tmerzWV_A/maxresdefault.jpg",
+    poster:
+      "https://tse4.mm.bing.net/th/id/OIP.HCWY9IWi7xaS53Wa5naMBQHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3",
     description:
       "Pushpa returns stronger and more ruthless as he faces off against Bhanwar Singh in a high-stakes battle for supremacy.",
     price: 18,
