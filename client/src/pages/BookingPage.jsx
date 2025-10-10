@@ -24,7 +24,6 @@ export default function BookingPage() {
   const [occupiedSeats, setOccupiedSeats] = useState({});
   const [loadingSeats, setLoadingSeats] = useState(false);
   const [selectedShowMovieDetail, setSelectedShowMovieDetail] = useState(null);
-  const [noShowsAvailable, setNoShowsAvailable] = useState(false);
 
   const {
     selectedMovie,
@@ -79,24 +78,18 @@ export default function BookingPage() {
     if (movieId) {
       console.log("movieId:", movieId);
 
-      // Use async function inside useEffect
       const fetchData = async () => {
         try {
           const result = await fetchMovieShows(movieId);
           console.log("my fetch show result is ", result);
 
           if (result.success) {
-            // Set movie details from the first show's movie data
-            if (
-              result.shows &&
-              result.shows.length > 0 &&
-              result.shows[0].movie
-            ) {
+            // Set movie details from the first show's movie data OR from selectedMovie
+            if (result.shows && result.shows.length > 0 && result.shows[0].movie) {
               setSelectedShowMovieDetail(result.shows[0].movie);
-              setNoShowsAvailable(false);
-            } else {
-              // No shows available
-              setNoShowsAvailable(true);
+            } else if (selectedMovie) {
+              // If no shows but we have selectedMovie, use that
+              setSelectedShowMovieDetail(selectedMovie);
             }
 
             // If selectedShow exists, set it up
@@ -105,18 +98,11 @@ export default function BookingPage() {
               setSelectedDate(showDate);
               setSelectedTime(selectedShow.showTime);
               setSelectedShowData(selectedShow);
-
-              // Fetch occupied seats
               fetchOccupiedSeats(selectedShow._id);
             }
-          } else {
-            // API returned error or no shows
-            setNoShowsAvailable(true);
-            console.error("Error fetching movie shows:");
           }
         } catch (error) {
           console.error("Error fetching movie shows:", error);
-          setNoShowsAvailable(true);
         }
       };
 
@@ -203,8 +189,6 @@ export default function BookingPage() {
     setSelectedTime(time);
     setSelectedShowData(showData);
     setSelectedSeats([]);
-
-    // Fetch occupied seats for the selected show
     await fetchOccupiedSeats(showData._id);
   };
 
@@ -215,10 +199,10 @@ export default function BookingPage() {
   console.log("current movie ", currentMovie);
   console.log("selected show movie detail ", selectedShowMovieDetail);
 
-  // Show loading if we don't have movie data yet and we have a movieId to fetch
+  // Show loading
   const isDirectUrlAccess = myMovieId?.id && !selectedMovie && !selectedShow;
   const shouldShowLoading =
-    loading || (isDirectUrlAccess && !selectedShowMovieDetail && !noShowsAvailable);
+    loading || (isDirectUrlAccess && !selectedShowMovieDetail);
 
   if (shouldShowLoading) {
     return (
@@ -259,157 +243,11 @@ export default function BookingPage() {
     );
   }
 
-  // Show "No shows available" message
-  if (noShowsAvailable && currentMovie) {
-    return (
-      <div className={`min-h-screen ${
-        isDark 
-          ? "bg-gradient-to-b from-slate-900 to-slate-800" 
-          : "bg-gradient-to-b from-slate-50 to-slate-100"
-      }`}>
-        <div className="max-w-6xl mx-auto px-4 py-8">
-          {/* Movie Info */}
-          <div className={`rounded-2xl p-6 mb-8 border ${
-            isDark 
-              ? "bg-slate-700 border-slate-600" 
-              : "bg-white border-slate-200 shadow-lg"
-          }`}>
-            <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
-              <img
-                src={currentMovie?.Poster}
-                alt={currentMovie?.Title}
-                draggable={false}
-                className="w-32 h-48 rounded-xl object-cover shadow-lg"
-              />
-              <div className={`flex-1 ${
-                isDark ? "text-white" : "text-slate-900"
-              }`}>
-                <h2 className="text-3xl font-bold mb-2">{currentMovie?.Title}</h2>
-                <p className={`mb-2 ${
-                  isDark ? "text-slate-300" : "text-slate-600"
-                }`}>{currentMovie?.Genre}</p>
-                <p className={`text-sm mb-4 ${
-                  isDark ? "text-slate-400" : "text-slate-500"
-                }`}>
-                  {currentMovie?.Plot}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-6 text-sm mb-6">
-                  <span className="flex items-center bg-yellow-500/20 px-3 py-1 rounded-full">
-                    <Star className="w-4 h-4 mr-1 text-yellow-400" />
-                    {currentMovie?.Ratings || "N/A"}
-                  </span>
-                  <span className={`flex items-center ${
-                    isDark ? "text-slate-300" : "text-slate-600"
-                  }`}>
-                    <Clock className="w-4 h-4 mr-1" />
-                    {currentMovie?.Runtime}
-                  </span>
-                  <span className={`flex items-center ${
-                    isDark ? "text-slate-300" : "text-slate-600"
-                  }`}>
-                    <MapPin className="w-4 h-4 mr-1" />
-                    CinemaVibe Multiplex
-                  </span>
-                  <span className={`px-3 py-1 rounded-full ${
-                    isDark 
-                      ? "bg-slate-600 text-slate-200" 
-                      : "bg-slate-200 text-slate-700"
-                  }`}>
-                    {currentMovie?.Rated}
-                  </span>
-                  <span className={`px-3 py-1 rounded-full ${
-                    isDark 
-                      ? "bg-slate-600 text-slate-200" 
-                      : "bg-slate-200 text-slate-700"
-                  }`}>
-                    <button
-                      onClick={() => toggleFavorite(currentMovie._id)}
-                      className="backdrop-blur-sm rounded-full p-1 transition-colors bg-black/50"
-                    >
-                      <Heart
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          favoriteMovies.find(
-                            (fav) => fav._id === currentMovie._id
-                          )
-                            ? "fill-red-500 text-red-500 scale-110"
-                            : "text-white"
-                        }`}
-                      />
-                    </button>
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6">
-                  <div>
-                    <span className={`${
-                      isDark ? "text-slate-400" : "text-slate-500"
-                    }`}>Director:</span>
-                    <p className={`${
-                      isDark ? "text-slate-200" : "text-slate-700"
-                    }`}>{currentMovie?.Director}</p>
-                  </div>
-                  <div>
-                    <span className={`${
-                      isDark ? "text-slate-400" : "text-slate-500"
-                    }`}>Language:</span>
-                    <p className={`${
-                      isDark ? "text-slate-200" : "text-slate-700"
-                    }`}>{currentMovie?.Language}</p>
-                  </div>
-                  <div className="md:col-span-2">
-                    <span className={`${
-                      isDark ? "text-slate-400" : "text-slate-500"
-                    }`}>Cast:</span>
-                    <p className={`${
-                      isDark ? "text-slate-200" : "text-slate-700"
-                    }`}>{currentMovie?.Actors}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* No Shows Available Message */}
-          <div className={`rounded-2xl p-8 border text-center ${
-            isDark 
-              ? "bg-slate-700 border-slate-600" 
-              : "bg-white border-slate-200 shadow-lg"
-          }`}>
-            <AlertCircle className={`w-16 h-16 mx-auto mb-4 ${
-              isDark ? "text-yellow-400" : "text-yellow-500"
-            }`} />
-            <h3 className={`text-2xl font-semibold mb-2 ${
-              isDark ? "text-white" : "text-slate-900"
-            }`}>
-              No Shows Available
-            </h3>
-            <p className={`text-lg mb-6 ${
-              isDark ? "text-slate-300" : "text-slate-600"
-            }`}>
-              There are currently no active shows scheduled for this movie.
-            </p>
-            <p className={`mb-6 ${
-              isDark ? "text-slate-400" : "text-slate-500"
-            }`}>
-              Please check back later or browse other movies.
-            </p>
-            <button
-              onClick={() => navigate("/")}
-              className="bg-emerald-500 px-6 py-3 rounded-lg hover:bg-emerald-600 text-white font-medium transition-colors"
-            >
-              Browse Other Movies
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   const groupedShows = groupShowsByDate();
   const availableDates = Object.keys(groupedShows).sort(
     (a, b) => new Date(a) - new Date(b)
   );
+  const hasShows = availableDates.length > 0;
 
   return (
     <div className={`min-h-screen ${
@@ -520,7 +358,7 @@ export default function BookingPage() {
           </div>
         </div>
 
-        {/* Date Selection */}
+        {/* Date Selection - Show even if no shows */}
         <div className={`rounded-2xl p-6 mb-6 border ${
           isDark 
             ? "bg-slate-700 border-slate-600" 
@@ -532,37 +370,56 @@ export default function BookingPage() {
             <Calendar className="w-5 h-5 mr-2" />
             Select Date
           </h3>
-          <div className="flex flex-wrap gap-3">
-            {availableDates.map((dateString) => (
-              <button
-                key={dateString}
-                onClick={() => handleDateSelect(dateString)}
-                className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                  selectedDate === dateString
-                    ? "bg-emerald-500 text-white shadow-lg"
-                    : isDark
-                    ? "bg-slate-600 text-slate-300 hover:bg-slate-500"
-                    : "bg-slate-200 text-slate-700 hover:bg-slate-300"
-                }`}
-              >
-                <div className="text-center">
-                  <p className="font-semibold">
-                    {formatDateForDisplay(dateString)}
-                  </p>
-                  <p className="text-xs opacity-80">
-                    {new Date(dateString).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
-              </button>
-            ))}
-          </div>
+          
+          {hasShows ? (
+            <div className="flex flex-wrap gap-3">
+              {availableDates.map((dateString) => (
+                <button
+                  key={dateString}
+                  onClick={() => handleDateSelect(dateString)}
+                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                    selectedDate === dateString
+                      ? "bg-emerald-500 text-white shadow-lg"
+                      : isDark
+                      ? "bg-slate-600 text-slate-300 hover:bg-slate-500"
+                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                  }`}
+                >
+                  <div className="text-center">
+                    <p className="font-semibold">
+                      {formatDateForDisplay(dateString)}
+                    </p>
+                    <p className="text-xs opacity-80">
+                      {new Date(dateString).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <AlertCircle className={`w-12 h-12 mx-auto mb-3 ${
+                isDark ? "text-slate-500" : "text-slate-400"
+              }`} />
+              <p className={`text-lg font-medium ${
+                isDark ? "text-slate-300" : "text-slate-700"
+              }`}>
+                No shows available for this movie
+              </p>
+              <p className={`text-sm mt-2 ${
+                isDark ? "text-slate-400" : "text-slate-500"
+              }`}>
+                Please check back later or explore other movies
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Time Selection */}
-        {selectedDate && (
+        {selectedDate && hasShows && (
           <div className={`rounded-2xl p-6 mb-6 border ${
             isDark 
               ? "bg-slate-700 border-slate-600" 
@@ -687,8 +544,8 @@ export default function BookingPage() {
           />
         )}
 
-        {/* No selection messages */}
-        {!selectedDate && (
+        {/* No selection messages - Only show if there ARE shows */}
+        {hasShows && !selectedDate && (
           <div className="text-center py-12">
             <Calendar className={`w-16 h-16 mx-auto mb-4 ${
               isDark ? "text-slate-500" : "text-slate-300"
@@ -701,7 +558,7 @@ export default function BookingPage() {
           </div>
         )}
 
-        {selectedDate && !selectedTime && (
+        {hasShows && selectedDate && !selectedTime && (
           <div className="text-center py-12">
             <Clock className={`w-16 h-16 mx-auto mb-4 ${
               isDark ? "text-slate-500" : "text-slate-300"
