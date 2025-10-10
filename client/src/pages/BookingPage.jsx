@@ -118,7 +118,8 @@ export default function BookingPage() {
 
       fetchData();
     }
-  }, [selectedMovie, selectedShow, myMovieId, fetchMovieShows]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMovie?._id, selectedShow?._id, myMovieId?.id]);
 
   const fetchFavoriteMovies = async () => {
     try {
