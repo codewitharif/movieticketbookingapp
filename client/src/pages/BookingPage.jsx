@@ -7,7 +7,6 @@ import {
   Play,
   Loader,
   Heart,
-  AlertCircle,
 } from "lucide-react";
 import SeatSelection from "../components/SeatSelection";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +23,6 @@ export default function BookingPage() {
   const [occupiedSeats, setOccupiedSeats] = useState({});
   const [loadingSeats, setLoadingSeats] = useState(false);
   const [selectedShowMovieDetail, setSelectedShowMovieDetail] = useState(null);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const {
     selectedMovie,
@@ -36,7 +34,7 @@ export default function BookingPage() {
     groupShowsByDate,
     selectedSeats,
     setSelectedSeats,
-    theme,
+    theme, // Add theme from store
   } = useMovieStore();
 
   const isDark = theme === "dark";
@@ -76,51 +74,46 @@ export default function BookingPage() {
     console.log("selectedMovie?._id", selectedMovie?._id);
     console.log("selectedShow?.movie?._id", selectedShow?.movie?._id);
 
-    if (movieId && isInitialLoad) {
+    if (movieId) {
       console.log("movieId:", movieId);
 
+      // Use async function inside useEffect
       const fetchData = async () => {
         try {
-          // Direct API call to ensure we get the data
-          const response = await axios.get(`/api/shows/movie/${movieId}`);
-          console.log("Direct API response:", response.data);
+          const result = await fetchMovieShows(movieId);
+          console.log("my fetch show result is ", result);
 
-          if (response.data.success) {
-            const result = response.data;
-
-            // Set movie details first (to avoid loading screen)
-            if (result.movie) {
-              setSelectedShowMovieDetail(result.movie);
-            } else if (result.shows && result.shows.length > 0 && result.shows[0].movie) {
+          if (result.success) {
+            // Set movie details from the first show's movie data
+            if (
+              result.shows &&
+              result.shows.length > 0 &&
+              result.shows[0].movie
+            ) {
               setSelectedShowMovieDetail(result.shows[0].movie);
-            } else if (selectedMovie) {
-              setSelectedShowMovieDetail(selectedMovie);
             }
 
-            // Update the store in background (don't await - to avoid re-render)
-            fetchMovieShows(movieId);
-
             // If selectedShow exists, set it up
-            if (selectedShow && result.shows.length > 0) {
+            if (selectedShow) {
               const showDate = new Date(selectedShow.showDate).toDateString();
               setSelectedDate(showDate);
               setSelectedTime(selectedShow.showTime);
               setSelectedShowData(selectedShow);
+
+              // Fetch occupied seats
               fetchOccupiedSeats(selectedShow._id);
             }
-            
-            setIsInitialLoad(false);
+          } else {
+            console.error("Error fetching movie shows:");
           }
         } catch (error) {
           console.error("Error fetching movie shows:", error);
-          setIsInitialLoad(false);
         }
       };
 
       fetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMovie?._id, selectedShow?._id, myMovieId?.id]);
+  }, [selectedMovie, selectedShow, myMovieId, fetchMovieShows]);
 
   const fetchFavoriteMovies = async () => {
     try {
@@ -193,14 +186,16 @@ export default function BookingPage() {
     setSelectedTime("");
     setSelectedShowData(null);
     setOccupiedSeats({});
-    setSelectedSeats([]);
+    setSelectedSeats([]); // Clear selected seats when date changes
   };
 
   // Handle time selection
   const handleTimeSelect = async (time, showData) => {
     setSelectedTime(time);
     setSelectedShowData(showData);
-    setSelectedSeats([]);
+    setSelectedSeats([]); // Clear selected seats when time changes
+
+    // Fetch occupied seats for the selected show
     await fetchOccupiedSeats(showData._id);
   };
 
@@ -211,7 +206,7 @@ export default function BookingPage() {
   console.log("current movie ", currentMovie);
   console.log("selected show movie detail ", selectedShowMovieDetail);
 
-  // Show loading
+  // Show loading if we don't have movie data yet and we have a movieId to fetch
   const isDirectUrlAccess = myMovieId?.id && !selectedMovie && !selectedShow;
   const shouldShowLoading =
     loading || (isDirectUrlAccess && !selectedShowMovieDetail);
@@ -259,7 +254,6 @@ export default function BookingPage() {
   const availableDates = Object.keys(groupedShows).sort(
     (a, b) => new Date(a) - new Date(b)
   );
-  const hasShows = availableDates.length > 0;
 
   return (
     <div className={`min-h-screen ${
@@ -370,7 +364,7 @@ export default function BookingPage() {
           </div>
         </div>
 
-        {/* Date Selection - Show even if no shows */}
+        {/* Date Selection */}
         <div className={`rounded-2xl p-6 mb-6 border ${
           isDark 
             ? "bg-slate-700 border-slate-600" 
@@ -382,56 +376,37 @@ export default function BookingPage() {
             <Calendar className="w-5 h-5 mr-2" />
             Select Date
           </h3>
-          
-          {hasShows ? (
-            <div className="flex flex-wrap gap-3">
-              {availableDates.map((dateString) => (
-                <button
-                  key={dateString}
-                  onClick={() => handleDateSelect(dateString)}
-                  className={`px-6 py-3 rounded-lg font-medium transition-all ${
-                    selectedDate === dateString
-                      ? "bg-emerald-500 text-white shadow-lg"
-                      : isDark
-                      ? "bg-slate-600 text-slate-300 hover:bg-slate-500"
-                      : "bg-slate-200 text-slate-700 hover:bg-slate-300"
-                  }`}
-                >
-                  <div className="text-center">
-                    <p className="font-semibold">
-                      {formatDateForDisplay(dateString)}
-                    </p>
-                    <p className="text-xs opacity-80">
-                      {new Date(dateString).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8">
-              <AlertCircle className={`w-12 h-12 mx-auto mb-3 ${
-                isDark ? "text-slate-500" : "text-slate-400"
-              }`} />
-              <p className={`text-lg font-medium ${
-                isDark ? "text-slate-300" : "text-slate-700"
-              }`}>
-                No shows available for this movie
-              </p>
-              <p className={`text-sm mt-2 ${
-                isDark ? "text-slate-400" : "text-slate-500"
-              }`}>
-                Please check back later or explore other movies
-              </p>
-            </div>
-          )}
+          <div className="flex flex-wrap gap-3">
+            {availableDates.map((dateString) => (
+              <button
+                key={dateString}
+                onClick={() => handleDateSelect(dateString)}
+                className={`px-6 py-3 rounded-lg font-medium transition-all ${
+                  selectedDate === dateString
+                    ? "bg-emerald-500 text-white shadow-lg"
+                    : isDark
+                    ? "bg-slate-600 text-slate-300 hover:bg-slate-500"
+                    : "bg-slate-200 text-slate-700 hover:bg-slate-300"
+                }`}
+              >
+                <div className="text-center">
+                  <p className="font-semibold">
+                    {formatDateForDisplay(dateString)}
+                  </p>
+                  <p className="text-xs opacity-80">
+                    {new Date(dateString).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Time Selection */}
-        {selectedDate && hasShows && (
+        {selectedDate && (
           <div className={`rounded-2xl p-6 mb-6 border ${
             isDark 
               ? "bg-slate-700 border-slate-600" 
@@ -556,8 +531,8 @@ export default function BookingPage() {
           />
         )}
 
-        {/* No selection messages - Only show if there ARE shows */}
-        {hasShows && !selectedDate && (
+        {/* No selection messages */}
+        {!selectedDate && (
           <div className="text-center py-12">
             <Calendar className={`w-16 h-16 mx-auto mb-4 ${
               isDark ? "text-slate-500" : "text-slate-300"
@@ -570,7 +545,7 @@ export default function BookingPage() {
           </div>
         )}
 
-        {hasShows && selectedDate && !selectedTime && (
+        {selectedDate && !selectedTime && (
           <div className="text-center py-12">
             <Clock className={`w-16 h-16 mx-auto mb-4 ${
               isDark ? "text-slate-500" : "text-slate-300"
