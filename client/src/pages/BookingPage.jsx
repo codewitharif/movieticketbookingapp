@@ -80,12 +80,18 @@ export default function BookingPage() {
 
       const fetchData = async () => {
         try {
-          const result = await fetchMovieShows(movieId);
-          console.log("my fetch show result is ", result);
+          // Direct API call to ensure we get the data
+          const response = await axios.get(`/api/shows/movie/${movieId}`);
+          console.log("Direct API response:", response.data);
 
-          if (result.success) {
+          if (response.data.success) {
+            const result = response.data;
+            
+            // Also update the store
+            await fetchMovieShows(movieId);
+
             // Set movie details - priority order:
-            // 1. From API response (if backend sends movie object)
+            // 1. From API response movie object
             // 2. From first show's populated movie
             // 3. From selectedMovie state
             if (result.movie) {
@@ -97,7 +103,7 @@ export default function BookingPage() {
             }
 
             // If selectedShow exists, set it up
-            if (selectedShow) {
+            if (selectedShow && result.shows.length > 0) {
               const showDate = new Date(selectedShow.showDate).toDateString();
               setSelectedDate(showDate);
               setSelectedTime(selectedShow.showTime);
