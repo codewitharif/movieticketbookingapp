@@ -7,6 +7,7 @@ import {
   Play,
   Loader,
   Heart,
+  AlertCircle,
 } from "lucide-react";
 import SeatSelection from "../components/SeatSelection";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,6 +24,7 @@ export default function BookingPage() {
   const [occupiedSeats, setOccupiedSeats] = useState({});
   const [loadingSeats, setLoadingSeats] = useState(false);
   const [selectedShowMovieDetail, setSelectedShowMovieDetail] = useState(null);
+  const [noShowsAvailable, setNoShowsAvailable] = useState(false);
 
   const {
     selectedMovie,
@@ -34,7 +36,7 @@ export default function BookingPage() {
     groupShowsByDate,
     selectedSeats,
     setSelectedSeats,
-    theme, // Add theme from store
+    theme,
   } = useMovieStore();
 
   const isDark = theme === "dark";
@@ -91,6 +93,10 @@ export default function BookingPage() {
               result.shows[0].movie
             ) {
               setSelectedShowMovieDetail(result.shows[0].movie);
+              setNoShowsAvailable(false);
+            } else {
+              // No shows available
+              setNoShowsAvailable(true);
             }
 
             // If selectedShow exists, set it up
@@ -104,10 +110,13 @@ export default function BookingPage() {
               fetchOccupiedSeats(selectedShow._id);
             }
           } else {
+            // API returned error or no shows
+            setNoShowsAvailable(true);
             console.error("Error fetching movie shows:");
           }
         } catch (error) {
           console.error("Error fetching movie shows:", error);
+          setNoShowsAvailable(true);
         }
       };
 
@@ -186,14 +195,14 @@ export default function BookingPage() {
     setSelectedTime("");
     setSelectedShowData(null);
     setOccupiedSeats({});
-    setSelectedSeats([]); // Clear selected seats when date changes
+    setSelectedSeats([]);
   };
 
   // Handle time selection
   const handleTimeSelect = async (time, showData) => {
     setSelectedTime(time);
     setSelectedShowData(showData);
-    setSelectedSeats([]); // Clear selected seats when time changes
+    setSelectedSeats([]);
 
     // Fetch occupied seats for the selected show
     await fetchOccupiedSeats(showData._id);
@@ -209,7 +218,7 @@ export default function BookingPage() {
   // Show loading if we don't have movie data yet and we have a movieId to fetch
   const isDirectUrlAccess = myMovieId?.id && !selectedMovie && !selectedShow;
   const shouldShowLoading =
-    loading || (isDirectUrlAccess && !selectedShowMovieDetail);
+    loading || (isDirectUrlAccess && !selectedShowMovieDetail && !noShowsAvailable);
 
   if (shouldShowLoading) {
     return (
@@ -245,6 +254,153 @@ export default function BookingPage() {
           >
             Go Back
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Show "No shows available" message
+  if (noShowsAvailable && currentMovie) {
+    return (
+      <div className={`min-h-screen ${
+        isDark 
+          ? "bg-gradient-to-b from-slate-900 to-slate-800" 
+          : "bg-gradient-to-b from-slate-50 to-slate-100"
+      }`}>
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          {/* Movie Info */}
+          <div className={`rounded-2xl p-6 mb-8 border ${
+            isDark 
+              ? "bg-slate-700 border-slate-600" 
+              : "bg-white border-slate-200 shadow-lg"
+          }`}>
+            <div className="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6">
+              <img
+                src={currentMovie?.Poster}
+                alt={currentMovie?.Title}
+                draggable={false}
+                className="w-32 h-48 rounded-xl object-cover shadow-lg"
+              />
+              <div className={`flex-1 ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}>
+                <h2 className="text-3xl font-bold mb-2">{currentMovie?.Title}</h2>
+                <p className={`mb-2 ${
+                  isDark ? "text-slate-300" : "text-slate-600"
+                }`}>{currentMovie?.Genre}</p>
+                <p className={`text-sm mb-4 ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}>
+                  {currentMovie?.Plot}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-6 text-sm mb-6">
+                  <span className="flex items-center bg-yellow-500/20 px-3 py-1 rounded-full">
+                    <Star className="w-4 h-4 mr-1 text-yellow-400" />
+                    {currentMovie?.Ratings || "N/A"}
+                  </span>
+                  <span className={`flex items-center ${
+                    isDark ? "text-slate-300" : "text-slate-600"
+                  }`}>
+                    <Clock className="w-4 h-4 mr-1" />
+                    {currentMovie?.Runtime}
+                  </span>
+                  <span className={`flex items-center ${
+                    isDark ? "text-slate-300" : "text-slate-600"
+                  }`}>
+                    <MapPin className="w-4 h-4 mr-1" />
+                    CinemaVibe Multiplex
+                  </span>
+                  <span className={`px-3 py-1 rounded-full ${
+                    isDark 
+                      ? "bg-slate-600 text-slate-200" 
+                      : "bg-slate-200 text-slate-700"
+                  }`}>
+                    {currentMovie?.Rated}
+                  </span>
+                  <span className={`px-3 py-1 rounded-full ${
+                    isDark 
+                      ? "bg-slate-600 text-slate-200" 
+                      : "bg-slate-200 text-slate-700"
+                  }`}>
+                    <button
+                      onClick={() => toggleFavorite(currentMovie._id)}
+                      className="backdrop-blur-sm rounded-full p-1 transition-colors bg-black/50"
+                    >
+                      <Heart
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          favoriteMovies.find(
+                            (fav) => fav._id === currentMovie._id
+                          )
+                            ? "fill-red-500 text-red-500 scale-110"
+                            : "text-white"
+                        }`}
+                      />
+                    </button>
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-6">
+                  <div>
+                    <span className={`${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}>Director:</span>
+                    <p className={`${
+                      isDark ? "text-slate-200" : "text-slate-700"
+                    }`}>{currentMovie?.Director}</p>
+                  </div>
+                  <div>
+                    <span className={`${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}>Language:</span>
+                    <p className={`${
+                      isDark ? "text-slate-200" : "text-slate-700"
+                    }`}>{currentMovie?.Language}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <span className={`${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}>Cast:</span>
+                    <p className={`${
+                      isDark ? "text-slate-200" : "text-slate-700"
+                    }`}>{currentMovie?.Actors}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* No Shows Available Message */}
+          <div className={`rounded-2xl p-8 border text-center ${
+            isDark 
+              ? "bg-slate-700 border-slate-600" 
+              : "bg-white border-slate-200 shadow-lg"
+          }`}>
+            <AlertCircle className={`w-16 h-16 mx-auto mb-4 ${
+              isDark ? "text-yellow-400" : "text-yellow-500"
+            }`} />
+            <h3 className={`text-2xl font-semibold mb-2 ${
+              isDark ? "text-white" : "text-slate-900"
+            }`}>
+              No Shows Available
+            </h3>
+            <p className={`text-lg mb-6 ${
+              isDark ? "text-slate-300" : "text-slate-600"
+            }`}>
+              There are currently no active shows scheduled for this movie.
+            </p>
+            <p className={`mb-6 ${
+              isDark ? "text-slate-400" : "text-slate-500"
+            }`}>
+              Please check back later or browse other movies.
+            </p>
+            <button
+              onClick={() => navigate("/")}
+              className="bg-emerald-500 px-6 py-3 rounded-lg hover:bg-emerald-600 text-white font-medium transition-colors"
+            >
+              Browse Other Movies
+            </button>
+          </div>
         </div>
       </div>
     );
