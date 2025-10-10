@@ -63,20 +63,7 @@ export const featuredMovies = [
     trailer_link: "https://youtu.be/VlvOgk5BHS4",
   },
 
-  {
-    id: 5,
-    title: "Sitaare Zameen Par",
-    genre: "Sports • Drama • Comedy",
-    rating: 8.5,
-    duration: "2h 38min",
-    poster:
-      "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiRnVmv3j3OiBgjb084hvbq6uoRatBj6DFHXbhX1v4w3Qm_VGv1TbE3c40vzOvub16JhSHN59GcZlvY5gcKK1jg0Odb0MxXPChuOqowVZGULqMkFZfaEh7Lo9v1UHqVPWHcat2E1lp8ivQ7v8_cJMOEqidJ9OIImqykFAQ7BiNRbcUEAGsuid-GWhTnwr0/s1024/Sitaare%20Zameen%20Par%20Movie%20Review.jpg",
-    description:
-      "A suspended basketball coach is ordered to train a team of players with disabilities, leading to an emotional journey of growth, inclusion, and triumph.",
-    price: 20,
-    booking_link: "/booking/687e59a185de1426df651c06",
-    trailer_link: "https://youtu.be/YH6k5weqwy8",
-  },
+ 
 ];
 
 const useMovieStore = create((set, get) => ({
