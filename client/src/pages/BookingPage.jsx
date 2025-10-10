@@ -208,25 +208,25 @@ export default function BookingPage() {
 
   // Show loading if we don't have movie data yet and we have a movieId to fetch
   const isDirectUrlAccess = myMovieId?.id && !selectedMovie && !selectedShow;
-  const shouldShowLoading =
-    loading || (isDirectUrlAccess && !selectedShowMovieDetail);
+  // const shouldShowLoading =
+  //   loading || (isDirectUrlAccess && !selectedShowMovieDetail);
 
-  if (shouldShowLoading) {
-    return (
-      <div className={`min-h-screen flex items-center justify-center ${
-        isDark 
-          ? "bg-slate-800" 
-          : "bg-slate-100"
-      }`}>
-        <div className={`flex items-center ${
-          isDark ? "text-white" : "text-slate-800"
-        }`}>
-          <Loader className="w-6 h-6 animate-spin mr-2" />
-          Loading movie details...
-        </div>
-      </div>
-    );
-  }
+  // if (shouldShowLoading) {
+  //   return (
+  //     <div className={`min-h-screen flex items-center justify-center ${
+  //       isDark 
+  //         ? "bg-slate-800" 
+  //         : "bg-slate-100"
+  //     }`}>
+  //       <div className={`flex items-center ${
+  //         isDark ? "text-white" : "text-slate-800"
+  //       }`}>
+  //         <Loader className="w-6 h-6 animate-spin mr-2" />
+  //          movie details...
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -377,7 +377,7 @@ export default function BookingPage() {
             Select Date
           </h3>
           <div className="flex flex-wrap gap-3">
-            {availableDates && availableDates.map((dateString) => (
+            {availableDates.map((dateString) => (
               <button
                 key={dateString}
                 onClick={() => handleDateSelect(dateString)}
@@ -507,7 +507,7 @@ export default function BookingPage() {
           </div>
         )}
 
-        {/* Loading Seats */}
+        {/*  Seats */}
         {loadingSeats && (
           <div className={`rounded-2xl p-8 mb-6 border text-center ${
             isDark 
