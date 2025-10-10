@@ -84,11 +84,15 @@ export default function BookingPage() {
           console.log("my fetch show result is ", result);
 
           if (result.success) {
-            // Set movie details from the first show's movie data OR from selectedMovie
-            if (result.shows && result.shows.length > 0 && result.shows[0].movie) {
+            // Set movie details - priority order:
+            // 1. From API response (if backend sends movie object)
+            // 2. From first show's populated movie
+            // 3. From selectedMovie state
+            if (result.movie) {
+              setSelectedShowMovieDetail(result.movie);
+            } else if (result.shows && result.shows.length > 0 && result.shows[0].movie) {
               setSelectedShowMovieDetail(result.shows[0].movie);
             } else if (selectedMovie) {
-              // If no shows but we have selectedMovie, use that
               setSelectedShowMovieDetail(selectedMovie);
             }
 
