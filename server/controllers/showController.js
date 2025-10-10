@@ -229,9 +229,21 @@ exports.getShowsByMovieId = async (req, res) => {
   try {
     const { movieId } = req.params;
 
-    const shows = await Show.find({ movie: movieId })
+    const now = new Date();
+
+    const shows = await Show.find({
+      movie: movieId,
+      status: "active",
+      $or: [
+        { showDate: { $gt: now } }, // future dates
+        {
+          showDate: { $eq: now.toISOString().split("T")[0] }, // today's shows
+          showTime: { $gt: now.toTimeString().slice(0, 5) }, // future times (optional)
+        },
+      ],
+    })
       .populate("movie")
-      .sort({ showDate: 1, showTime: 1 }); // Sort by date and time instead of createdAt
+      .sort({ showDate: 1, showTime: 1 });
 
     if (shows.length === 0) {
       return res.status(404).json({ message: "No shows found for this movie" });
