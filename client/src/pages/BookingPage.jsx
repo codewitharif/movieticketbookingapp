@@ -377,7 +377,7 @@ export default function BookingPage() {
             Select Date
           </h3>
           <div className="flex flex-wrap gap-3">
-            {availableDates.map((dateString) => (
+            {availableDates && availableDates.map((dateString) => (
               <button
                 key={dateString}
                 onClick={() => handleDateSelect(dateString)}
