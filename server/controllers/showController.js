@@ -228,9 +228,8 @@ exports.deleteShow = async (req, res) => {
 exports.getShowsByMovieId = async (req, res) => {
   try {
     const { movieId } = req.params;
-
     const now = new Date();
-
+    
     const shows = await Show.find({
       movie: movieId,
       status: "active",
@@ -238,23 +237,24 @@ exports.getShowsByMovieId = async (req, res) => {
         { showDate: { $gt: now } }, // future dates
         {
           showDate: { $eq: now.toISOString().split("T")[0] }, // today's shows
-          showTime: { $gt: now.toTimeString().slice(0, 5) }, // future times (optional)
+          showTime: { $gt: now.toTimeString().slice(0, 5) }, // future times
         },
       ],
     })
       .populate("movie")
       .sort({ showDate: 1, showTime: 1 });
 
-    if (shows.length === 0) {
-      return res.status(404).json({ message: "No shows found for this movie" });
-    }
-
-    res.status(200).json({ success: true, shows });
+    // Always return success with shows array (empty or filled)
+    res.status(200).json({ 
+      success: true, 
+      shows: shows,
+      message: shows.length === 0 ? "No shows found for this movie" : null
+    });
   } catch (error) {
     console.error("Error fetching shows by movie ID:", error);
     res
       .status(500)
-      .json({ message: "Failed to fetch shows", error: error.message });
+      .json({ success: false, message: "Failed to fetch shows", error: error.message });
   }
 };
 
