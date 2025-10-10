@@ -86,9 +86,6 @@ export default function BookingPage() {
 
           if (response.data.success) {
             const result = response.data;
-            
-            // Also update the store
-            await fetchMovieShows(movieId);
 
             // Set movie details - priority order:
             // 1. From API response movie object
