@@ -76,7 +76,7 @@ export default function BookingPage() {
     console.log("selectedMovie?._id", selectedMovie?._id);
     console.log("selectedShow?.movie?._id", selectedShow?.movie?._id);
 
-    if (movieId) {
+    if (movieId && isInitialLoad) {
       console.log("movieId:", movieId);
 
       const fetchData = async () => {
@@ -87,14 +87,8 @@ export default function BookingPage() {
 
           if (response.data.success) {
             const result = response.data;
-            
-            // Update the store (important for groupShowsByDate to work)
-            fetchMovieShows(movieId);
 
-            // Set movie details - priority order:
-            // 1. From API response movie object
-            // 2. From first show's populated movie
-            // 3. From selectedMovie state
+            // Set movie details first (to avoid loading screen)
             if (result.movie) {
               setSelectedShowMovieDetail(result.movie);
             } else if (result.shows && result.shows.length > 0 && result.shows[0].movie) {
@@ -102,6 +96,9 @@ export default function BookingPage() {
             } else if (selectedMovie) {
               setSelectedShowMovieDetail(selectedMovie);
             }
+
+            // Update the store in background (don't await - to avoid re-render)
+            fetchMovieShows(movieId);
 
             // If selectedShow exists, set it up
             if (selectedShow && result.shows.length > 0) {
@@ -111,9 +108,12 @@ export default function BookingPage() {
               setSelectedShowData(selectedShow);
               fetchOccupiedSeats(selectedShow._id);
             }
+            
+            setIsInitialLoad(false);
           }
         } catch (error) {
           console.error("Error fetching movie shows:", error);
+          setIsInitialLoad(false);
         }
       };
 
