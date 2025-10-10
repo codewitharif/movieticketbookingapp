@@ -230,31 +230,43 @@ exports.getShowsByMovieId = async (req, res) => {
     const { movieId } = req.params;
     const now = new Date();
     
+    // First get the movie details
+    const movie = await Movie.findById(movieId);
+    
+    if (!movie) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Movie not found" 
+      });
+    }
+    
     const shows = await Show.find({
       movie: movieId,
       status: "active",
       $or: [
-        { showDate: { $gt: now } }, // future dates
+        { showDate: { $gt: now } },
         {
-          showDate: { $eq: now.toISOString().split("T")[0] }, // today's shows
-          showTime: { $gt: now.toTimeString().slice(0, 5) }, // future times
+          showDate: { $eq: now.toISOString().split("T")[0] },
+          showTime: { $gt: now.toTimeString().slice(0, 5) },
         },
       ],
     })
       .populate("movie")
       .sort({ showDate: 1, showTime: 1 });
 
-    // Always return success with shows array (empty or filled)
     res.status(200).json({ 
       success: true, 
+      movie: movie, // Always send movie details
       shows: shows,
       message: shows.length === 0 ? "No shows found for this movie" : null
     });
   } catch (error) {
     console.error("Error fetching shows by movie ID:", error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to fetch shows", error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to fetch shows", 
+      error: error.message 
+    });
   }
 };
 
