@@ -142,13 +142,7 @@ export default function FAQSection() {
           <p className={`mb-4 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
             Our support team is here to help you
           </p>
-          <button
-            className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
-              isDark
-                ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white"
-            }`}
-          >
+          <button className="px-6 py-2 rounded-lg font-semibold bg-gradient-to-r from-emerald-500 to-cyan-500 text-white hover:shadow-lg transition-all">
             Contact Support
           </button>
         </div>
