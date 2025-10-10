@@ -24,6 +24,7 @@ export default function BookingPage() {
   const [occupiedSeats, setOccupiedSeats] = useState({});
   const [loadingSeats, setLoadingSeats] = useState(false);
   const [selectedShowMovieDetail, setSelectedShowMovieDetail] = useState(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const {
     selectedMovie,
@@ -86,6 +87,9 @@ export default function BookingPage() {
 
           if (response.data.success) {
             const result = response.data;
+            
+            // Update the store (important for groupShowsByDate to work)
+            fetchMovieShows(movieId);
 
             // Set movie details - priority order:
             // 1. From API response movie object
